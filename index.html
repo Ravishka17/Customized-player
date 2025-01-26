@@ -527,6 +527,11 @@
     document.querySelectorAll('.controls button').forEach(button => {
       button.addEventListener('click', showControls);
     });
+
+    // Prevent right-click
+    document.getElementById('video-container').addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+});     
   </script>
 </body>
 </html>
