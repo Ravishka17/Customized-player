@@ -531,7 +531,39 @@
     // Prevent right-click
     document.getElementById('video-container').addEventListener('contextmenu', (e) => {
     e.preventDefault();
-});     
+});    
+
+    // Add double-tap to seek
+    let lastTapTime = 0;
+    const DOUBLE_TAP_THRESHOLD = 300;
+
+    videoContainer.addEventListener('touchend', (e) => {
+      const currentTime = Date.now();
+      const tapPosition = e.changedTouches[0].clientX;
+      const containerWidth = videoContainer.offsetWidth;
+  
+    if (currentTime - lastTapTime < DOUBLE_TAP_THRESHOLD) {
+      // Double tap detected
+      if (tapPosition < containerWidth / 2) {
+        video.currentTime -= 10; // Rewind 10 seconds
+        } else {
+        video.currentTime += 10; // Forward 10 seconds
+       }
+     }
+  
+       lastTapTime = currentTime;
+    });
+
+     // Add volume slider
+     const volumeSlider = document.createElement('input');
+     volumeSlider.type = 'range';
+     volumeSlider.min = '0';
+     volumeSlider.max = '1';
+     volumeSlider.step = '0.1';
+     volumeSlider.value = video.volume;
+     volumeSlider.addEventListener('input', (e) => {
+     video.volume = e.target.value;
+   }); 
   </script>
 </body>
 </html>
