@@ -533,6 +533,14 @@
       event.preventDefault();
  });
 
+setInterval(() => {
+    if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
+      document.body.innerHTML = "";
+      alert("Inspecting is not allowed!");
+      window.location.href = "about:blank";
+    }
+  }, 1000);
+
   // Function to update the download link based on controls visibility
   const updateDownloadLink = () => {
     const downloadUrl = "https://streamtape.com/get_video?id=1O6YJGyDYwIeO2q&expires=1738379488&ip=GxAsDRMTKxSHDN&token=NAfysj8kfDL2&dl=1";
