@@ -416,6 +416,14 @@
   const tabButtons = document.querySelectorAll('.settings-header button');
   const tabs = document.querySelectorAll('.settings-tab');
 
+setInterval(() => {
+    if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
+      document.body.innerHTML = "";
+      alert("Inspecting is not allowed!");
+      window.location.href = "about:blank";
+    }
+  }, 1000);
+
   // Ensure elements exist before adding event listeners
   if (settingsButton) {
     settingsButton.addEventListener('click', () => {
