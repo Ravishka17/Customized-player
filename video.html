@@ -913,21 +913,28 @@
         });
       }
 
-        if (video) {
-    video.addEventListener('pause', () => {
-      showControls();
-      centerControls.style.opacity = 1;
-      rewindButton.style.display = 'block';
-      forwardButton.style.display = 'block';
-      playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
+  if (playPauseButton) {
+    playPauseButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (firstPlay) {
+        video.play();
+        playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
+        firstPlay = false;
+      } else {
+        if (!controlsVisible) {
+          showControls();
+        } else {
+          if (video.paused) {
+            video.play();
+            playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
+          } else {
+            video.pause();
+            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
+          }
+        }
+      }
     });
-
-    video.addEventListener('play', () => {
-      hideControls();
-      rewindButton.style.display = 'block';
-      forwardButton.style.display = 'block';
-      playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
-    });
+  }
 
       if (rewindButton) {
         rewindButton.addEventListener('click', (event) => {
