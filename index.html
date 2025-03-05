@@ -332,7 +332,7 @@
     <div class="center-controls" id="center-controls">
       <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg>
       <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
-      <button id="forward"><i class="material-icons">forward_10</i></button>
+      <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg>
     </div>
 
     <!-- Progress Bar -->
@@ -595,7 +595,7 @@
       hideControls();
       rewindButton.style.display = 'block';
       forwardButton.style.display = 'block';
-      playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
+      playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
     });
 
     video.addEventListener('waiting', () => {
