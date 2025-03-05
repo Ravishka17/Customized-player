@@ -154,19 +154,15 @@
     .center-controls button {
       background: transparent;
       border: none;
-      color: #f39c12;
+      fill: #f39c12;
       font-size: 38px;
       cursor: none;
       transition: background 0.3s ease;
     }
 
-    .center-controls button i {
-      hight: 5px;
-      width: 10px;
-    }
-    
-    #play-pause {
-      font-size: 50px;
+    .center-controls button svg {
+      hight: 50px;
+      width: 50px;
     }
     
     .loading-spinner {
@@ -455,13 +451,11 @@
       <p>This video cannot be played because of a problem with your internet connection.<br>(Error Code: 230002)</p>
     </div>
 
-    <!-- Center Play Controls -->
+            <!-- Center Play Controls -->
     <div class="center-controls" id="center-controls">
-      <button id="rewind"><i class="icon-rewind-10"></i></button>
-      <div class="loading-spinner" id="loading-spinner">
-      </div>
-      <button id="play-pause"><i class="bi bi-play-fill"></i></button>
-      <button id="forward"><i class="icon-skip-10"></i></button>
+      <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg>
+      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
+      <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg>
     </div>
 
     <!-- Progress Bar -->
