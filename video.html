@@ -169,10 +169,7 @@
       display: none;
       width: 48px;
       height: 48px;
-      border: 5px solid #f39c12; /* Loader color */
-      border-bottom-color: transparent; /* Transparent section */
-      border-radius: 50%;
-      box-sizing: border-box;
+      fill: #f39c12
       animation: rotation 1s linear infinite; /* Smooth spin */
     }
     
@@ -454,10 +451,10 @@
     <!-- Center Play Controls -->
     <div class="center-controls" id="center-controls">
       <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg>
-      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
       <div class="loading-spinner" id="loading-spinner"><svg class="icon"><use xlink:href="icons-sprite.svg#buffer"></use>
       </svg>
      </div>
+      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
       <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg>
     </div>
 
