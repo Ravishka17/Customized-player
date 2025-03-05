@@ -404,7 +404,7 @@
       </div>
     </div>
   </div>
-
+  
   <script>
   document.addEventListener('DOMContentLoaded', function() {
   const video = document.getElementById('video');
@@ -529,17 +529,18 @@
     controlsVisible = false;
     updateDownloadLink();
   };
-   // Prevent right-click context menu
-   document.addEventListener('contextmenu', function(event) {
-      event.preventDefault();
- });
 
-   // Prevent long-press context menu on touch devices
-   document.addEventListener('touchstart', function(event) {
+  // Prevent right-click context menu
+  document.addEventListener('contextmenu', function(event) {
       event.preventDefault();
- });
+  });
 
-setInterval(() => {
+  // Prevent long-press context menu on touch devices
+  document.addEventListener('touchstart', function(event) {
+      event.preventDefault();
+  });
+
+  setInterval(() => {
     if (window.outerWidth - window.innerWidth > 200 || window.outerHeight - window.innerHeight > 200) {
       document.body.innerHTML = "";
       alert("Inspecting is not allowed!");
@@ -587,12 +588,14 @@ setInterval(() => {
       centerControls.style.opacity = 1;
       rewindButton.style.display = 'block';
       forwardButton.style.display = 'block';
+      playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
     });
 
     video.addEventListener('play', () => {
       hideControls();
       rewindButton.style.display = 'block';
       forwardButton.style.display = 'block';
+      playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
     });
 
     video.addEventListener('waiting', () => {
@@ -644,7 +647,7 @@ setInterval(() => {
             playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
           } else {
             video.pause();
-            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-spite.svg#play"></use></svg>';
+            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
           }
         }
       }
@@ -877,6 +880,6 @@ setInterval(() => {
     }
   });
 });
-  </script>
+</script>  
 </body>
 </html>
