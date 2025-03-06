@@ -141,7 +141,7 @@
     
     .center-controls {
       position: absolute;
-      top: 47%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       display: flex;
@@ -151,14 +151,24 @@
       opacity: 1;
     }
 
-    .center-controls button {
-      background: transparent;
-      border: none;
-      fill: #f39c12;
-      font-size: 38px;
-      cursor: none;
-      transition: background 0.3s ease;
-    }
+   .center-controls .loading-spinner {
+     position: absolute;
+     top: 0;
+     left: 50%;
+     transform: translate(-50%, -50%);
+     display: none;
+     fill: #f39c12;
+     animation: rotation 1s linear infinite;
+   }
+
+   .center-controls button {
+     background: transparent;
+     border: none;
+     fill: #f39c12;
+     font-size: 38px;
+     cursor: none;
+     transition: background 0.3s ease;
+   }
 
     .center-controls button svg {
       hight: 50px;
