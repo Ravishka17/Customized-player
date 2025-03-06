@@ -575,6 +575,16 @@
       const preview = document.getElementById('preview');
       const previewTime = document.getElementById('preview-time');
 
+video.addEventListener('waiting', () => {
+  loadingSpinner.style.display = 'block';
+  playPauseButton.style.display = 'none';
+});
+
+video.addEventListener('playing', () => {
+  loadingSpinner.style.display = 'none';
+  playPauseButton.style.display = 'block';
+});
+
       // Array of preview image URLs
       const previewImages = [
         'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_001-8mJkdJK8PtAuDyGhXtQIHmBqcPQQ2U.png',
