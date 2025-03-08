@@ -1097,12 +1097,12 @@ function handleOptionSelection(selector, type) {
           document.msExitFullscreen();
         }
 
-        fullscreenButton.innerHTML = '<use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
+        fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
       };
 
       document.addEventListener('fullscreenchange', function () {
         if (!document.fullscreenElement) {
-          fullscreenButton.innerHTML = '<use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
+          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
           fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
         }
