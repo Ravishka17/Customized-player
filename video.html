@@ -137,8 +137,9 @@
 
     .controls button svg,
     .controls a svg {
-      width: 25px; /* Set the desired width */
-      height: 25px; /* Set the desired height */
+      width: 30px; /* Set the desired width */
+      height: 30px; /* Set the desired height */
+      fill: #f39c12;
     }
 
     .time {
@@ -415,8 +416,8 @@
 
       .controls button svg,
       .controls a svg {
-        width: 25px; /* Set the desired width */
-        height: 25px; /* Set the desired height */
+        width: 35px; /* Set the desired width */
+        height: 35px; /* Set the desired height */
       }
 
       /* Increase size of center controls */
@@ -485,25 +486,24 @@
       <button id="volume-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>
       </button>
       <div class="time" id="time">00:00 / 00:00</div>
-      <a id="download" download="video.mp4"><i class="icon-icon-download"></i></a> <!-- Download button -->
-      <button id="subtitles"><i class="bi bi-badge-cc"></i></button> <!-- Subtitles button -->
-      <button id="settings"><i class="fa-solid fa-gear"></i></button>
+      <a id="download" download="video.mp4"><use xlink:href="icons-sprite.svg#download"></use></svg></a> <!-- Download button -->
+      <button id="subtitles"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="settings"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
       <button id="pip-toggle"><i class="bi bi-pip"></i></button> <!-- PiP button -->
-      <button id="fullscreen"><i class="icon-fullscreen"></i></button>
+      <button id="fullscreen"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg></button>
     </div>
 
     <!-- Fullscreen Left Controls -->
     <div class="fullscreen-left-controls controls">
-      <button id="volume-toggle-fullscreen"><i class="bi bi-volume-up-fill"></i></button>
+      <button id="volume-toggle-fullscreen"><use xlink:href="icons-sprite.svg#volume-on"></use></svg></button>
       <div class="time" id="time-fullscreen">00:00 / 00:00</div>
     </div>
 
     <!-- Fullscreen Right Controls -->
     <div class="fullscreen-right-controls controls">
-      <a id="download-fullscreen" download="video.mp4"><i class="icon-icon-download"></i></a>
-      <button id="subtitles-fullscreen"><i class="bi bi-badge-cc"></i></button> <!-- Subtitles button -->
-      <button id="settings-fullscreen"><i class="fa-solid fa-gear"></i></button>
-      <button id="pip-toggle-fullscreen"><i class="bi bi-pip"></i></button> <!-- PiP button -->
+      <a id="download-fullscreen" download="video.mp4"><use xlink:href="icons-sprite.svg#download"></use></svg></a>
+      <button id="subtitles-fullscreen"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="settings-fullscreen"><use xlink:href="icons-sprite.svg#settings"></use></svg></button> <!-- PiP button -->
       <button id="fullscreen-exit"><i class="fa-solid fa-compress"></i></button>
     </div>
 
@@ -776,15 +776,15 @@
               const subtitlesIcon = document.querySelector('#subtitles i');
               const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen i');
               if (option.dataset.caption === 'off') {
-                subtitlesIcon.classList.remove('bi-badge-cc-fill');
-                subtitlesIcon.classList.add('bi-badge-cc');
-                subtitlesFullscreenIcon.classList.remove('bi-badge-cc-fill');
-                subtitlesFullscreenIcon.classList.add('bi-badge-cc');
+                subtitlesIcon.classList.remove('icons-sprite.svg#captions-on');
+                subtitlesIcon.classList.add('icons-sprite.svg#captions-off');
+                subtitlesFullscreenIcon.classList.remove('icons-sprite.svg#captions-on');
+                subtitlesFullscreenIcon.classList.add('icons-sprite.svg#captions-on');
               } else {
-                subtitlesIcon.classList.remove('bi-badge-cc');
-                subtitlesIcon.classList.add('bi-badge-cc-fill');
-                subtitlesFullscreenIcon.classList.remove('bi-badge-cc');
-                subtitlesFullscreenIcon.classList.add('bi-badge-cc-fill');
+                subtitlesIcon.classList.remove('icons-sprite.svg#captions-off');
+                subtitlesIcon.classList.add('icons-sprite.svg#captions-on');
+                subtitlesFullscreenIcon.classList.remove('icons-sprite.svg#captions-off');
+                subtitlesFullscreenIcon.classList.add('icons-sprite.svg#captions-on');
               }
             }
           });
@@ -1100,13 +1100,12 @@
           document.msExitFullscreen();
         }
 
-        fullscreenButton.innerHTML = '<i class="icon-fullscreen"></i>';
-        fullscreenExitButton.innerHTML = '<i class="icon-fullscreen"></i>';
+        fullscreenButton.innerHTML = '<use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
       };
 
       document.addEventListener('fullscreenchange', function () {
         if (!document.fullscreenElement) {
-          fullscreenButton.innerHTML = '<i class="icon-fullscreen"></i>';
+          fullscreenButton.innerHTML = '<use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
           fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
         }
