@@ -763,33 +763,30 @@
         });
       });
 
-      function handleOptionSelection(selector, type) {
-        const options = document.querySelectorAll(selector);
-        options.forEach(option => {
-          option.addEventListener('click', () => {
-            options.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-            console.log(`Selected ${type}:`, option.dataset[type]);
-            if (type === 'speed') {
-              video.playbackRate = parseFloat(option.dataset.speed);
-            } else if (type === 'caption') {
-              const subtitlesIcon = document.querySelector('#subtitles i');
-              const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen i');
-              if (option.dataset.caption === 'off') {
-                subtitlesIcon.classList.remove('icons-sprite.svg#captions-on');
-                subtitlesIcon.classList.add('icons-sprite.svg#captions-off');
-                subtitlesFullscreenIcon.classList.remove('icons-sprite.svg#captions-on');
-                subtitlesFullscreenIcon.classList.add('icons-sprite.svg#captions-on');
-              } else {
-                subtitlesIcon.classList.remove('icons-sprite.svg#captions-off');
-                subtitlesIcon.classList.add('icons-sprite.svg#captions-on');
-                subtitlesFullscreenIcon.classList.remove('icons-sprite.svg#captions-off');
-                subtitlesFullscreenIcon.classList.add('icons-sprite.svg#captions-on');
-              }
-            }
-          });
-        });
+function handleOptionSelection(selector, type) {
+  const options = document.querySelectorAll(selector);
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      options.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      console.log(`Selected ${type}:`, option.dataset[type]);
+
+      if (type === 'speed') {
+        video.playbackRate = parseFloat(option.dataset.speed);
+      } else if (type === 'caption') {
+        const subtitlesIcon = document.querySelector('#subtitles use');
+        const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
+        if (option.dataset.caption === 'off') {
+          subtitlesIcon.setAttribute('xlink:href', '#captions-off');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', '#captions-off');
+        } else {
+          subtitlesIcon.setAttribute('xlink:href', '#captions-on');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', '#captions-on');
+        }
       }
+    });
+  });
+}
 
       handleOptionSelection('#quality-tab li', 'quality');
       handleOptionSelection('#captions-tab li', 'caption');
