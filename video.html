@@ -777,11 +777,11 @@ function handleOptionSelection(selector, type) {
         const subtitlesIcon = document.querySelector('#subtitles use');
         const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
         if (option.dataset.caption === 'off') {
-          subtitlesIcon.setAttribute('xlink:href', '#captions-off');
-          subtitlesFullscreenIcon.setAttribute('xlink:href', '#captions-off');
+          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
         } else {
-          subtitlesIcon.setAttribute('xlink:href', '#captions-on');
-          subtitlesFullscreenIcon.setAttribute('xlink:href', '#captions-on');
+          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
         }
       }
     });
