@@ -1082,8 +1082,8 @@ function handleOptionSelection(selector, type) {
           });
         }
 
-        fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
-        fullscreenExitButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+        fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
+        fullscreenExitButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
       };
 
       const exitFullscreen = () => {
@@ -1104,7 +1104,7 @@ function handleOptionSelection(selector, type) {
         if (!document.fullscreenElement) {
           fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
-          fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         }
       });
 
