@@ -470,7 +470,8 @@
 
     <!-- Bottom Controls -->
     <div class="controls normal-controls">
-      <button id="volume-toggle"><i class="bi bi-volume-up-fill"></i></button>
+      <button id="volume-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>
+      </button>
       <div class="time" id="time">00:00 / 00:00</div>
       <a id="download" download="video.mp4"><i class="icon-icon-download"></i></a> <!-- Download button -->
       <button id="subtitles"><i class="bi bi-badge-cc"></i></button> <!-- Subtitles button -->
@@ -966,7 +967,7 @@
 
       const toggleMute = () => {
         video.muted = !video.muted;
-        const volumeIcon = video.muted ? '<i class="bi bi-volume-mute-fill"></i>' : '<i class="bi bi-volume-up-fill"></i>';
+        const volumeIcon = video.muted ? '<svg class="icon"><use xlink:href="icons-sprite.svg#mute"></use></svg>' : '<svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>';
         volumeToggleButton.innerHTML = volumeIcon;
         volumeToggleFullscreenButton.innerHTML = volumeIcon;
       };
