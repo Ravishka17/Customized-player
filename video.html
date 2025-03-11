@@ -75,6 +75,12 @@
       background: none;
       backdrop-filter: none !important;
       z-index: 1000;
+      transition: bottom 0.3s ease; /* smooth transition for position change */
+    }
+
+    /* position above the progress bar when controls are visible */
+    .video-container.show-show-controls #subtitles-container {
+       bottom: 60px;
     }
 
     /* Hide the default HTML5 subtitles */
