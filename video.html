@@ -62,6 +62,26 @@
       display: block;
     }
 
+    /* Custom Subtitle Styling */
+    #subtitles-container {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      background: none;
+      backdrop-filter: none !important;
+      z-index: 1000;
+    }
+
+    /* Hide the default HTML5 subtitles */
+    video::cue {
+      display: none;
+    }
+
     /* Progress Bar */
     .progress-bar {
       position: absolute;
@@ -279,7 +299,8 @@
       color: white;
       width: 250px;
       height: 190px;
-      display: none;
+      display: none; /* Default state */
+      flex-direction: column; /* Explicitly set flex direction */
       z-index: 1000;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       overflow-y: auto;
@@ -293,9 +314,9 @@
       justify-content: space-between;
       align-items: center;
       background: #222;
-      padding-top: 10px;
+      padding: 10px; /* Adjusted padding for consistency */
       border-bottom: 1px solid #555;
-      position: sticky; /* Keeps header fixed */
+      position: sticky;
       top: 0;
       z-index: 10;
     }
@@ -320,11 +341,12 @@
       user-select: none;
     }
 
-    /* Content Area */
+     /* Content Area */
     .settings-body {
-      height: calc(100% - 40px); /* Takes all available height minus header */
+      flex: 1; /* Ensure it takes remaining space */
       background-color: #333;
       padding: 10px 5px;
+      overflow-y: auto; /* Ensure scrolling works */
     }
 
     /* Tabs */
@@ -376,7 +398,7 @@
 
     .error-message svg {
       width: 40px;
-      higth: 40px;
+      heigth: 40px;
       margin-bottom: 5px;
     }
 
@@ -385,6 +407,7 @@
       top: 7%;
       width: 400px;
       height: 300px;
+      display: none;
     }
 
     /* Media query for larger screens (desktop) */
@@ -454,7 +477,9 @@
 </head>
 <body>
   <div class="video-container" id="video-container">
-    <video id="video" src="https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg"></video>
+    <video id="video" src="https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg">
+  </video>
+ <div id="subtitles-container"></div>
     <!-- Add this inside the video-container div -->
     <div id="preview" class="preview"></div>
     <div id="preview-time" class="preview-time"></div>
@@ -555,6 +580,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const video = document.getElementById('video');
+      const subtitlesContainer = document.getElementById('subtitles-container');
       const playPauseButton = document.getElementById('play-pause');
       const rewindButton = document.getElementById('rewind');
       const forwardButton = document.getElementById('forward');
@@ -584,6 +610,159 @@
       const tabs = document.querySelectorAll('.settings-tab');
       const preview = document.getElementById('preview');
       const previewTime = document.getElementById('preview-time');
+
+      let subtitles = []; // Subtitles are OFF by default
+
+      // Function to load subtitles
+      function loadSubtitles(lang) {
+        let subtitleURL = '';
+        if (lang === 'english') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/english.vtt';
+        } else if (lang === 'spanish') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/spanish.vtt';
+        } else if (lang === 'french') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/french.vtt';
+        }
+
+        fetch(subtitleURL)
+          .then(response => response.text())
+          .then(data => {
+            subtitles = [];
+            const lines = data.split('\n');
+            let currentSubtitle = null;
+
+            lines.forEach(line => {
+              if (line.trim() === '') return;
+              if (line.includes('-->')) {
+                if (currentSubtitle) subtitles.push(currentSubtitle);
+                currentSubtitle = { time: line, text: '' };
+              } else {
+                if (currentSubtitle) currentSubtitle.text += line + ' ';
+              }
+            });
+            if (currentSubtitle) subtitles.push(currentSubtitle);
+          });
+      }
+
+      // Function to change subtitles
+      function changeSubtitles(lang) {
+        if (lang === 'off') {
+          subtitlesContainer.textContent = '';
+          subtitles = []; // Clear subtitles
+        } else {
+          loadSubtitles(lang);
+        }
+        settingsMenu.style.display = 'none'; // Close menu after selection
+      }
+
+      // Function to display subtitles
+      function displaySubtitles() {
+        const currentTime = video.currentTime;
+        let currentSubtitleText = '';
+
+        for (let subtitle of subtitles) {
+          const [start, end] = subtitle.time.split(' --> ').map(time => {
+            const [hours, minutes, seconds] = time.split(':');
+            return parseFloat(hours) * 3600 + parseFloat(minutes) * 60 + parseFloat(seconds);
+          });
+
+          if (currentTime >= start && currentTime <= end) {
+            currentSubtitleText = subtitle.text;
+          }
+        }
+
+        subtitlesContainer.textContent = currentSubtitleText;
+      }
+
+      video.addEventListener('timeupdate', displaySubtitles);
+
+      // Toggle settings menu
+      if (settingsButton) {
+        settingsButton.addEventListener('click', () => {
+          if (settingsMenu.style.display === 'flex') {
+            settingsMenu.style.display = 'none';
+          } else {
+            settingsMenu.style.display = 'flex';
+            const activeTab = document.querySelector('.settings-header button.active');
+            if (!activeTab) {
+              document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
+            }
+          }
+        });
+      }
+
+      if (settingsFullscreenButton) {
+        settingsFullscreenButton.addEventListener('click', () => {
+          if (settingsMenu.style.display === 'flex') {
+            settingsMenu.style.display = 'none';
+          } else {
+            settingsMenu.style.display = 'flex';
+            const activeTab = document.querySelector('.settings-header button.active');
+            if (!activeTab) {
+              document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
+            }
+          }
+        });
+      }
+
+      if (subtitlesButton) {
+        subtitlesButton.addEventListener('click', () => {
+          settingsMenu.style.display = 'flex';
+          document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
+        });
+      }
+
+      if (subtitlesFullscreenButton) {
+        subtitlesFullscreenButton.addEventListener('click', () => {
+          settingsMenu.style.display = 'flex';
+          document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
+        });
+      }
+
+      if (closeSettingsButton) {
+        closeSettingsButton.addEventListener('click', () => {
+          settingsMenu.style.display = 'none';
+        });
+      }
+
+      tabButtons.forEach(button => {
+        button.addEventListener('click', () => {
+          tabButtons.forEach(btn => btn.classList.remove('active'));
+          tabs.forEach(tab => tab.classList.remove('active-tab'));
+          button.classList.add('active');
+          document.getElementById(button.getAttribute('data-tab')).classList.add('active-tab');
+        });
+      });
+
+      function handleOptionSelection(selector, type) {
+        const options = document.querySelectorAll(selector);
+        options.forEach(option => {
+          option.addEventListener('click', () => {
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            console.log(`Selected ${type}:`, option.dataset[type]);
+
+            if (type === 'speed') {
+              video.playbackRate = parseFloat(option.dataset.speed);
+            } else if (type === 'caption') {
+              changeSubtitles(option.dataset.caption);
+              const subtitlesIcon = document.querySelector('#subtitles use');
+              const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
+              if (option.dataset.caption === 'off') {
+                subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+                subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+              } else {
+                subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+                subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+              }
+            }
+          });
+        });
+      }
+
+      handleOptionSelection('#quality-tab li', 'quality');
+      handleOptionSelection('#captions-tab li', 'caption');
+      handleOptionSelection('#speed-tab li', 'speed');
 
 
       // Array of preview image URLs
