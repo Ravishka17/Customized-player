@@ -83,6 +83,15 @@
        bottom: 60px;
     }
 
+    /* Adjust for fullscreen mode */
+    .video-container:fullscreen            #subtitles-container {
+       bottom: 20px; /* Default position in      fullscreen when controls are hidden */
+    }
+
+    .video-container:fullscreen.show-controls  #subtitles-container {
+       bottom: 65px; /* Adjust this value to position above the progress bar in fullscreen */
+    }
+
     /* Hide the default HTML5 subtitles */
     video::cue {
       display: none;
