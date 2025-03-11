@@ -62,6 +62,26 @@
       display: block;
     }
 
+    /* Custom Subtitle Styling */
+    #subtitles {
+      position: absolute;
+      bottom: 20px;
+      left: 0;
+      width: 100%;
+      text-align: center;
+      font-size: 20px;
+      color: white;
+      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+      background: none;
+      backdrop-filter: none !important;
+      z-index: 1000;
+    }
+
+    /* Hide the default HTML5 subtitles */
+    video::cue {
+      display: none;
+    }
+
     /* Progress Bar */
     .progress-bar {
       position: absolute;
@@ -456,6 +476,7 @@
   <div class="video-container" id="video-container">
     <video id="video" src="https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg"></video>
     <!-- Add this inside the video-container div -->
+    <div id="subtitles"></div> <!-- Custom Subtitle Display -->
     <div id="preview" class="preview"></div>
     <div id="preview-time" class="preview-time"></div>
 
@@ -518,7 +539,7 @@
         <button class="active" data-tab="quality-tab"> <i class="bi bi-reception-4" style="font-size: 20px;"></i> </button>
         <button data-tab="captions-tab"> <i class="bi bi-cc-square" style="font-size: 20px;"></i> 
         </button>
-        <button data-tab="speed-tab"> <span class="material-symbols-outlined" style="font-size: 20px;">acute</span> 
+                <button data-tab="speed-tab"> <span class="material-symbols-outlined" style="font-size: 20px;">acute</span> 
         </button>
         <span class="close-settings" id="close-settings"><span class="material-icons">close</span></span>
       </div>
@@ -555,6 +576,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const video = document.getElementById('video');
+      const subtitlesContainer = document.getElementById('subtitles');
       const playPauseButton = document.getElementById('play-pause');
       const rewindButton = document.getElementById('rewind');
       const forwardButton = document.getElementById('forward');
@@ -585,154 +607,81 @@
       const preview = document.getElementById('preview');
       const previewTime = document.getElementById('preview-time');
 
+      let subtitles = []; // Subtitles are OFF by default
 
-      // Array of preview image URLs
-      const previewImages = [
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_001-8mJkdJK8PtAuDyGhXtQIHmBqcPQQ2U.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_002-uzfoIz6nvtKnaYLcKPFO2zkxPwTweX.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_003-iU2jbHJGNMGqtUuujWVTMN2GqepqV8.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_004-eOgZmtE4z3uLrDCd2Sk6atWxLuJZLb.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_005-coZc2ymrOJ7TwfVn6Id4gTEABb2hzI.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_006-dbwJKr2tRDZyucwsBpEkaAOb1XW2Qx.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_007-pn4iNYzzxFdKL5TBYhin0mtpQ8QuWD.png',
-        'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_008-n2INvZKGJjlKU5T8ARwVSO5ovnrwTU.png'
-      ];
-
-      // Show preview on progress bar hover/move
-      progressBar.addEventListener('mousemove', (event) => {
-        updatePreview(event.clientX);
-        showControls();
-        hideCenterControls();
-      });
-
-      // Hide preview when not hovering over the progress bar
-      progressBar.addEventListener('mouseleave', () => {
-        preview.style.display = 'none';
-        previewTime.style.display = 'none';
-        hideControls();
-        showCenterControls();
-      });
-
-      // Seek video when clicking on progress bar
-      progressBar.addEventListener('click', (event) => {
-        const rect = progressBar.getBoundingClientRect();
-        const pos = (event.clientX - rect.left) / rect.width;
-        video.currentTime = pos * video.duration;
-        preview.style.display = 'none';
-        previewTime.style.display = 'none';
-        showControls();
-      });
-
-      // Variables to track touch interaction
-      let isTouching = false;
-      let initialTouchX = 0;
-      let initialTime = 0;
-      let wasPlaying = false;
-
-      // Handle touch start on progress bar
-      progressBar.addEventListener('touchstart', (event) => {
-        isTouching = true;
-        initialTouchX = event.touches[0].clientX;
-        initialTime = video.currentTime;
-        wasPlaying = !video.paused;
-        video.pause();
-        updateVideoTime(event.touches[0].clientX);
-        showControls();
-        hideCenterControls();
-        clearTimeout(controlsTimeout); // Prevent hiding controls
-      });
-
-      // Handle touch move on progress bar
-      progressBar.addEventListener('touchmove', (event) => {
-        if (isTouching) {
-          updateVideoTime(event.touches[0].clientX);
-          showControls();
-          hideCenterControls();
+      // Function to load subtitles
+      function loadSubtitles(lang) {
+        let subtitleURL = '';
+        if (lang === 'english') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/english.vtt';
+        } else if (lang === 'spanish') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/spanish.vtt';
+        } else if (lang === 'french') {
+          subtitleURL = 'https://customized-player.vercel.app/subtitles/french.vtt';
         }
-      });
 
-      // Handle touch end on progress bar
-      progressBar.addEventListener('touchend', (event) => {
-        isTouching = false;
-        const rect = progressBar.getBoundingClientRect();
-        const pos = (event.changedTouches[0].clientX - rect.left) / rect.width;
-        video.currentTime = pos * video.duration;
-        preview.style.display = 'none';
-        previewTime.style.display = 'none';
-        if (wasPlaying) {
-          video.play();
+        fetch(subtitleURL)
+          .then(response => response.text())
+          .then(data => {
+            subtitles = [];
+            const lines = data.split('\n');
+            let currentSubtitle = null;
+
+            lines.forEach(line => {
+              if (line.trim() === '') return;
+              if (line.includes('-->')) {
+                if (currentSubtitle) subtitles.push(currentSubtitle);
+                currentSubtitle = { time: line, text: '' };
+              } else {
+                if (currentSubtitle) currentSubtitle.text += line + ' ';
+              }
+            });
+            if (currentSubtitle) subtitles.push(currentSubtitle);
+          });
+      }
+
+      // Function to change subtitles
+      function changeSubtitles(lang) {
+        if (lang === 'off') {
+          subtitlesContainer.textContent = ''; 
+          subtitles = []; // Clear subtitles
+        } else {
+          loadSubtitles(lang);
         }
-        controlsTimeout = setTimeout(hideControls, 3000); // Hide controls after timeout
-        showCenterControls();
-      });
-
-      // Function to update the video time based on touch/mouse position
-      function updateVideoTime(clientX) {
-        const rect = progressBar.getBoundingClientRect();
-        const pos = (clientX - rect.left) / rect.width;
-        const newTime = pos * video.duration;
-
-        // Update the progress bar width
-        progress.style.width = `${pos * 100}%`;
-
-        // Display and update the preview thumbnail
-        updatePreviewThumbnail(newTime, clientX - rect.left);
-
-        // Display and update the preview time
-        updatePreviewTime(newTime, clientX - rect.left);
+        settingsMenu.style.display = 'none'; // Close menu after selection
       }
 
-      function updatePreviewThumbnail(time, clientX) {
-        const previewIndex = Math.floor((time / video.duration) * previewImages.length);
-        const previewImage = previewImages[previewIndex];
+      // Function to display subtitles
+      function displaySubtitles() {
+        const currentTime = video.currentTime;
+        let currentSubtitleText = '';
 
-        // Display the preview thumbnail
-        preview.style.backgroundImage = `url(${previewImage})`;
-        preview.style.display = 'block';
-        preview.style.left = `${clientX - preview.offsetWidth / 2}px`;
-      }
+        for (let subtitle of subtitles) {
+          const [start, end] = subtitle.time.split(' --> ').map(time => {
+            const [hours, minutes, seconds] = time.split(':');
+            return parseFloat(hours) * 3600 + parseFloat(minutes) * 60 + parseFloat(seconds);
+          });
 
-      function updatePreviewTime(time, clientX) {
-        const minutes = Math.floor(time / 60).toString().padStart(2, '0');
-        const seconds = Math.floor(time % 60).toString().padStart(2, '0');
-        const formattedTime = `${minutes}:${seconds}`;
-
-        // Display the preview time
-        previewTime.textContent = formattedTime;
-        previewTime.style.display = 'block';
-        previewTime.style.left = `${clientX - previewTime.offsetWidth / 2}px`;
-      }
-
-      // Function to hide the center controls
-      function hideCenterControls() {
-        centerControls.style.display = 'none';
-      }
-
-      // Function to show the center controls
-      function showCenterControls() {
-        if (!video.seeking && !video.waiting) {
-          centerControls.style.display = 'flex';
+          if (currentTime >= start && currentTime <= end) {
+            currentSubtitleText = subtitle.text;
+          }
         }
+
+        subtitlesContainer.textContent = currentSubtitleText;
       }
 
-      // Ensure elements exist before adding event listeners
+      video.addEventListener('timeupdate', displaySubtitles);
+
+      // Toggle settings menu
       if (settingsButton) {
         settingsButton.addEventListener('click', () => {
-          if (!controlsVisible) {
-            showControls();
-            return;
-          }
-          settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+          settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'flex' : 'none';
         });
       }
 
       if (settingsFullscreenButton) {
         settingsFullscreenButton.addEventListener('click', () => {
-          if (!controlsVisible) {
-            showControls();
-            return;
-          }
-          settingsMenu.style.display = settingsMenu.style.display === 'block' ? 'none' : 'block';
+          settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'flex' : 'none';
         });
       }
 
@@ -765,30 +714,31 @@
         });
       });
 
-function handleOptionSelection(selector, type) {
-  const options = document.querySelectorAll(selector);
-  options.forEach(option => {
-    option.addEventListener('click', () => {
-      options.forEach(opt => opt.classList.remove('selected'));
-      option.classList.add('selected');
-      console.log(`Selected ${type}:`, option.dataset[type]);
+      function handleOptionSelection(selector, type) {
+        const options = document.querySelectorAll(selector);
+        options.forEach(option => {
+          option.addEventListener('click', () => {
+            options.forEach(opt => opt.classList.remove('selected'));
+            option.classList.add('selected');
+            console.log(`Selected ${type}:`, option.dataset[type]);
 
-      if (type === 'speed') {
-        video.playbackRate = parseFloat(option.dataset.speed);
-      } else if (type === 'caption') {
-        const subtitlesIcon = document.querySelector('#subtitles use');
-        const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
-        if (option.dataset.caption === 'off') {
-          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
-          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
-        } else {
-          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
-          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
-        }
+            if (type === 'speed') {
+              video.playbackRate = parseFloat(option.dataset.speed);
+            } else if (type === 'caption') {
+              changeSubtitles(option.dataset.caption);
+              const subtitlesIcon = document.querySelector('#subtitles use');
+              const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
+              if (option.dataset.caption === 'off') {
+                subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+                subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+              } else {
+                subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+                subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+              }
+            }
+          });
+        });
       }
-    });
-  });
-}
 
       handleOptionSelection('#quality-tab li', 'quality');
       handleOptionSelection('#captions-tab li', 'caption');
@@ -931,28 +881,28 @@ function handleOptionSelection(selector, type) {
         });
       }
 
-  if (playPauseButton) {
-    playPauseButton.addEventListener('click', (event) => {
-      event.stopPropagation();
-      if (firstPlay) {
-        video.play();
-        playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
-        firstPlay = false;
-      } else {
-        if (!controlsVisible) {
-          showControls();
-        } else {
-          if (video.paused) {
+      if (playPauseButton) {
+        playPauseButton.addEventListener('click', (event) => {
+          event.stopPropagation();
+          if (firstPlay) {
             video.play();
-            playPauseButton.innerHTML ='<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+            firstPlay = false;
           } else {
-            video.pause();
-            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
+            if (!controlsVisible) {
+              showControls();
+            } else {
+              if (video.paused) {
+                video.play();
+                playPauseButton.innerHTML ='<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+              } else {
+                video.pause();
+                playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
+              }
+            }
           }
-        }
+        });
       }
-    });
-  }
 
       if (rewindButton) {
         rewindButton.addEventListener('click', (event) => {
@@ -1106,91 +1056,21 @@ function handleOptionSelection(selector, type) {
         if (!document.fullscreenElement) {
           fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
-          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
+          fullscreenButton.innerHTML           = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
         }
       });
 
-      if (centerControls) {
-        centerControls.addEventListener('click', showControls);
-      }
-
-      if (progressBar) {
-        progressBar.addEventListener('click', showControls);
-      }
-
-      document.querySelectorAll('.controls button').forEach(button => {
-        button.addEventListener('click', showControls);
-      });
-
-      document.getElementById('video-container').addEventListener('contextmenu', (e) => {
-        e.preventDefault();
-      });
-
-      let lastTapTime = 0;
-      const DOUBLE_TAP_THRESHOLD = 300;
-
-      if (videoContainer) {
-        videoContainer.addEventListener('touchend', (e) => {
-          const currentTime = Date.now();
-          const tapPosition = e.changedTouches[0].clientX;
-          const containerWidth = videoContainer.offsetWidth;
-
-          // Disable double-tap to skip if settings menu is open
-          if (settingsMenu.style.display === 'block') {
-            return;
-          }
-
-          if (currentTime - lastTapTime < DOUBLE_TAP_THRESHOLD) {
-            if (tapPosition < containerWidth / 2) {
-              video.currentTime -= 10;
-            } else {
-              video.currentTime += 10;
-            }
-          }
-
-          lastTapTime = currentTime;
-        });
-      }
-
-      if (downloadButton) {
-        downloadButton.addEventListener('click', (event) => {
-          if (!controlsVisible) {
-            showControls();
-            event.preventDefault();
-          }
-        });
-      }
-
-      if (downloadFullscreenButton) {
-        downloadFullscreenButton.addEventListener('click', (event) => {
-          if (!controlsVisible) {
-            showControls();
-            event.preventDefault();
-          }
-        });
-      }
-
-      window.addEventListener('keydown', (event) => {
-        if ((event.ctrlKey && event.shiftKey && event.key === 'I') ||
-            (event.ctrlKey && event.shiftKey && event.key === 'J') ||
-            (event.ctrlKey && event.key === 'U') ||
-            (event.key === 'F12')) {
-          event.preventDefault();
-        }
-      });
-
-      function updatePreview(clientX) {
+      const updatePreview = (clientX) => {
         const rect = progressBar.getBoundingClientRect();
         const pos = (clientX - rect.left) / rect.width;
         const previewTimeValue = pos * video.duration;
 
         // Display the preview thumbnail
-        preview.style.display = 'block';
-        preview.style.left = `${clientX - rect.left - preview.offsetWidth / 2}px`;
-
         const previewIndex = Math.floor((previewTimeValue / video.duration) * previewImages.length);
         const previewImage = previewImages[previewIndex];
         preview.style.backgroundImage = `url(${previewImage})`;
+        preview.style.display = 'block';
+        preview.style.left = `${clientX - rect.left - preview.offsetWidth / 2}px`;
 
         // Display the preview time
         const minutes = Math.floor(previewTimeValue / 60).toString().padStart(2, '0');
@@ -1199,7 +1079,50 @@ function handleOptionSelection(selector, type) {
         previewTime.textContent = formattedTime;
         previewTime.style.display = 'block';
         previewTime.style.left = `${clientX - previewTime.offsetWidth / 2}px`;
-      }
+      };
+
+      progressBar.addEventListener('mousemove', (event) => {
+        updatePreview(event.clientX);
+        showControls();
+        hideCenterControls();
+      });
+
+      progressBar.addEventListener('mouseleave', () => {
+        preview.style.display = 'none';
+        previewTime.style.display = 'none';
+        hideControls();
+        showCenterControls();
+      });
+
+      progressBar.addEventListener('click', (event) => {
+        const rect = progressBar.getBoundingClientRect();
+        const pos = (event.clientX - rect.left) / rect.width;
+        video.currentTime = pos * video.duration;
+        preview.style.display = 'none';
+        previewTime.style.display = 'none';
+        showControls();
+      });
+
+      videoContainer.addEventListener('click', (event) => {
+        if (event.target.closest('.controls') || event.target.closest('.center-controls') || event.target.closest('.settings-menu')) {
+          return;
+        }
+        if (controlsVisible) {
+          hideControls();
+        } else {
+          showControls();
+        }
+      });
+
+      const hideCenterControls = () => {
+        centerControls.style.display = 'none';
+      };
+
+      const showCenterControls = () => {
+        if (!video.seeking && !video.waiting) {
+          centerControls.style.display = 'flex';
+        }
+      };
     });
   </script>
 </body>
