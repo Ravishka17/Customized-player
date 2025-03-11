@@ -165,7 +165,7 @@
     .time {
       min-width: 100px;
     }
-    
+
     .center-controls {
       position: absolute;
       top: 50%;
@@ -189,20 +189,20 @@
       animation: rotation 1s linear infinite; /* Smooth spin */
     }
 
-   .center-controls button {
-     background: transparent;
-     border: none;
-     fill: #f39c12;
-     font-size: 38px;
-     cursor: none;
-     transition: background 0.3s ease;
-   }
+    .center-controls button {
+      background: transparent;
+      border: none;
+      fill: #f39c12;
+      font-size: 38px;
+      cursor: none;
+      transition: background 0.3s ease;
+    }
 
     .center-controls button svg {
-      hight: 50px;
+      height: 50px;
       width: 50px;
     }
-    
+
     #fullscreen {
       font-size: 40px;
     }
@@ -212,7 +212,6 @@
       0% {
         transform: rotate(0deg);
       }
-
       100% {
         transform: rotate(360deg);
       }
@@ -299,7 +298,8 @@
       color: white;
       width: 250px;
       height: 190px;
-      display: none;
+      display: none; /* Default state */
+      flex-direction: column; /* Explicitly set flex direction */
       z-index: 1000;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
       overflow-y: auto;
@@ -313,9 +313,9 @@
       justify-content: space-between;
       align-items: center;
       background: #222;
-      padding-top: 10px;
+      padding: 10px; /* Adjusted padding for consistency */
       border-bottom: 1px solid #555;
-      position: sticky; /* Keeps header fixed */
+      position: sticky;
       top: 0;
       z-index: 10;
     }
@@ -342,9 +342,10 @@
 
     /* Content Area */
     .settings-body {
-      height: calc(100% - 40px); /* Takes all available height minus header */
+      flex: 1; /* Ensure it takes remaining space */
       background-color: #333;
       padding: 10px 5px;
+      overflow-y: auto; /* Ensure scrolling works */
     }
 
     /* Tabs */
@@ -362,7 +363,7 @@
     }
 
     .settings-tab li.selected::before {
-      content: '\F309'; /* This is just a placeholder. Use the correct unicode for your Bootstrap icon */
+      content: '\F309'; /* Placeholder for Bootstrap icon */
       font-family: 'bootstrap-icons';
       color: #f39c12;
       position: absolute;
@@ -396,7 +397,7 @@
 
     .error-message svg {
       width: 40px;
-      higth: 40px;
+      height: 40px;
       margin-bottom: 5px;
     }
 
@@ -405,6 +406,7 @@
       top: 7%;
       width: 400px;
       height: 300px;
+      display: none; /* Ensure it starts hidden in fullscreen too */
     }
 
     /* Media query for larger screens (desktop) */
@@ -414,7 +416,6 @@
         height: 800px; /* Desktop view height */
       }
 
-      /* Increase size of progress bar */
       .progress-bar {
         bottom: 110px; /* Move it up a bit */
         height: 15px; /* Increase height */
@@ -424,7 +425,6 @@
         height: 100%;
       }
 
-      /* Increase size of bottom controls */
       .controls {
         bottom: 10px;
         font-size: 30px; /* Increase font size for icons */
@@ -441,7 +441,6 @@
         height: 35px; /* Set the desired height */
       }
 
-      /* Increase size of center controls */
       .center-controls {
         gap: 50px; /* Increase gap between buttons */
         top: 50%;
@@ -459,12 +458,11 @@
       .time {
         font-size: 50px;
       }
-      
+
       #fullscreen {
         font-size: 70px;
       }
 
-      /* Increase size of fullscreen controls */
       .fullscreen-left-controls button,
       .fullscreen-right-controls button {
         font-size: 30px; /* Increase font size for icons */
@@ -475,7 +473,6 @@
 <body>
   <div class="video-container" id="video-container">
     <video id="video" src="https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg"></video>
-    <!-- Add this inside the video-container div -->
     <div id="subtitles-container"></div> <!-- Custom Subtitle Display -->
     <div id="preview" class="preview"></div>
     <div id="preview-time" class="preview-time"></div>
@@ -488,14 +485,10 @@
 
     <!-- Center Play Controls -->
     <div class="center-controls" id="center-controls">
-      <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg>
-    </button>
-      <div class="loading-spinner" id="loading-spinner">
-      </div>
-      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
-      </button>
-      <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg>
-   </button>
+      <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg></button>
+      <div class="loading-spinner" id="loading-spinner"></div>
+      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg></button>
+      <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg></button>
     </div>
 
     <!-- Progress Bar -->
@@ -505,13 +498,12 @@
 
     <!-- Bottom Controls -->
     <div class="controls normal-controls">
-      <button id="volume-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>
-      </button>
+      <button id="volume-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg></button>
       <div class="time" id="time">00:00 / 00:00</div>
-      <a id="download" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a> <!-- Download button -->
-      <button id="subtitles"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <a id="download" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a>
+      <button id="subtitles"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button>
       <button id="settings"><svg class="icon"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
-      <button id="pip-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button> <!-- PiP button -->
+      <button id="pip-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button>
       <button id="fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg></button>
     </div>
 
@@ -524,9 +516,9 @@
     <!-- Fullscreen Right Controls -->
     <div class="fullscreen-right-controls controls">
       <a id="download-fullscreen" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a>
-      <button id="subtitles-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="subtitles-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button>
       <button id="settings-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
-      <button id="pip-toggle-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button> <!-- PiP button -->
+      <button id="pip-toggle-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button>
       <button id="fullscreen-exit"><svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg></button>
     </div>
 
@@ -534,13 +526,10 @@
     <div class="settings-menu" id="settings-menu">
       <!-- Toolbar Header -->
       <div class="settings-header">
-        <div style="text-align: center;">
-        </div>
-        <button class="active" data-tab="quality-tab"> <i class="bi bi-reception-4" style="font-size: 20px;"></i> </button>
-        <button data-tab="captions-tab"> <i class="bi bi-cc-square" style="font-size: 20px;"></i> 
-        </button>
-                <button data-tab="speed-tab"> <span class="material-symbols-outlined" style="font-size: 20px;">acute</span> 
-        </button>
+        <div style="text-align: center;"></div>
+        <button class="active" data-tab="quality-tab"><i class="bi bi-reception-4" style="font-size: 20px;"></i></button>
+        <button data-tab="captions-tab"><i class="bi bi-cc-square" style="font-size: 20px;"></i></button>
+        <button data-tab="speed-tab"><span class="material-symbols-outlined" style="font-size: 20px;">acute</span></button>
         <span class="close-settings" id="close-settings"><span class="material-icons">close</span></span>
       </div>
       <!-- Content Area -->
@@ -643,7 +632,7 @@
       // Function to change subtitles
       function changeSubtitles(lang) {
         if (lang === 'off') {
-          subtitlesContainer.textContent = ''; 
+          subtitlesContainer.textContent = '';
           subtitles = []; // Clear subtitles
         } else {
           loadSubtitles(lang);
@@ -675,26 +664,42 @@
       // Toggle settings menu
       if (settingsButton) {
         settingsButton.addEventListener('click', () => {
-          settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'flex' : 'none';
+          if (settingsMenu.style.display === 'flex') {
+            settingsMenu.style.display = 'none';
+          } else {
+            settingsMenu.style.display = 'flex';
+            const activeTab = document.querySelector('.settings-header button.active');
+            if (!activeTab) {
+              document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
+            }
+          }
         });
       }
 
       if (settingsFullscreenButton) {
         settingsFullscreenButton.addEventListener('click', () => {
-          settingsMenu.style.display = settingsMenu.style.display === 'none' ? 'flex' : 'none';
+          if (settingsMenu.style.display === 'flex') {
+            settingsMenu.style.display = 'none';
+          } else {
+            settingsMenu.style.display = 'flex';
+            const activeTab = document.querySelector('.settings-header button.active');
+            if (!activeTab) {
+              document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
+            }
+          }
         });
       }
 
       if (subtitlesButton) {
         subtitlesButton.addEventListener('click', () => {
-          settingsMenu.style.display = 'block';
+          settingsMenu.style.display = 'flex';
           document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
         });
       }
 
       if (subtitlesFullscreenButton) {
         subtitlesFullscreenButton.addEventListener('click', () => {
-          settingsMenu.style.display = 'block';
+          settingsMenu.style.display = 'flex';
           document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
         });
       }
@@ -773,13 +778,13 @@
         controlsVisible = true;
         updateDownloadLink();
         clearTimeout(controlsTimeout);
-        if (!video.paused && !isTouching && !video.waiting) {
+        if (!video.paused && !video.waiting) {
           controlsTimeout = setTimeout(hideControls, 3000);
         }
       };
 
       const hideControls = () => {
-        if (video.paused || isTouching || video.seeking || video.waiting) return;
+        if (video.paused || video.seeking || video.waiting) return;
         videoContainer.classList.remove('show-controls');
         centerControls.style.opacity = 0;
         controlsVisible = false;
@@ -847,15 +852,15 @@
         video.addEventListener('waiting', () => {
           loadingSpinner.style.display = 'block';
           playPauseButton.style.display = 'none';
-          centerControls.style.display = 'flex'; // Ensure center controls are visible
-          hideControls(); // Hide bottom controls
+          centerControls.style.display = 'flex';
+          hideControls();
         });
 
         video.addEventListener('playing', () => {
           loadingSpinner.style.display = 'none';
           playPauseButton.style.display = 'block';
-          centerControls.style.display = 'flex'; // Ensure center controls are visible
-          showControls(); // Show bottom controls
+          centerControls.style.display = 'flex';
+          showControls();
         });
 
         video.addEventListener('timeupdate', () => {
@@ -894,7 +899,7 @@
             } else {
               if (video.paused) {
                 video.play();
-                playPauseButton.innerHTML ='<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+                playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
               } else {
                 video.pause();
                 playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
@@ -1029,7 +1034,7 @@
         }
 
         if (screen.orientation && screen.orientation.lock) {
-          screen.orientation.lock('landscape').catch(function (error) {
+          screen.orientation.lock('landscape').catch(function(error) {
             console.log('Orientation lock failed: ', error);
           });
         }
@@ -1052,11 +1057,11 @@
         fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
       };
 
-      document.addEventListener('fullscreenchange', function () {
+      document.addEventListener('fullscreenchange', function() {
         if (!document.fullscreenElement) {
           fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
-          fullscreenButton.innerHTML           = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
+          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
         }
       });
 
@@ -1065,14 +1070,13 @@
         const pos = (clientX - rect.left) / rect.width;
         const previewTimeValue = pos * video.duration;
 
-        // Display the preview thumbnail
-        const previewIndex = Math.floor((previewTimeValue / video.duration) * previewImages.length);
-        const previewImage = previewImages[previewIndex];
-        preview.style.backgroundImage = `url(${previewImage})`;
+        // Placeholder for preview images (not implemented in original code)
+        // const previewIndex = Math.floor((previewTimeValue / video.duration) * previewImages.length);
+        // const previewImage = previewImages[previewIndex];
+        // preview.style.backgroundImage = `url(${previewImage})`;
         preview.style.display = 'block';
         preview.style.left = `${clientX - rect.left - preview.offsetWidth / 2}px`;
 
-        // Display the preview time
         const minutes = Math.floor(previewTimeValue / 60).toString().padStart(2, '0');
         const seconds = Math.floor(previewTimeValue % 60).toString().padStart(2, '0');
         const formattedTime = `${minutes}:${seconds}`;
