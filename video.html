@@ -509,7 +509,7 @@
       </button>
       <div class="time" id="time">00:00 / 00:00</div>
       <a id="download" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a> <!-- Download button -->
-      <button id="subtitles-button"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="subtitles-icon"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
       <button id="settings"><svg class="icon"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
       <button id="pip-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button> <!-- PiP button -->
       <button id="fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg></button>
@@ -576,7 +576,7 @@
   <script>
     document.addEventListener('DOMContentLoaded', function() {
       const video = document.getElementById('video');
-      const subtitlesContainer = document.getElementById('subtitles-button');
+      const subtitlesContainer = document.getElementById('subtitles-icon');
       const playPauseButton = document.getElementById('play-pause');
       const rewindButton = document.getElementById('rewind');
       const forwardButton = document.getElementById('forward');
@@ -726,13 +726,13 @@
               video.playbackRate = parseFloat(option.dataset.speed);
             } else if (type === 'caption') {
               changeSubtitles(option.dataset.caption);
-              const subtitlesButtonIcon = document.querySelector('#subtitles use');
+              const subtitlesIconIcon = document.querySelector('#subtitles use');
               const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
               if (option.dataset.caption === 'off') {
-                subtitlesButtonIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+                subtitlesIconIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
                 subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
               } else {
-                subtitlesButtonIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+                subtitlesIconIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
                 subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
               }
             }
