@@ -83,7 +83,7 @@
     /* Bottom Controls */
     .controls {
       position: absolute;
-      bottom: 5px;
+      bottom: 0;
       left: 15px;
       right: 15px;
       width: calc(100% - 30px);
@@ -135,13 +135,20 @@
       text-decoration: none;
     }
 
+    .controls button svg,
+    .controls a svg {
+      width: 30px; /* Set the desired width */
+      height: 30px; /* Set the desired height */
+      fill: #f39c12;
+    }
+
     .time {
       min-width: 100px;
     }
     
     .center-controls {
       position: absolute;
-      top: 47%;
+      top: 50%;
       left: 50%;
       transform: translate(-50%, -50%);
       display: flex;
@@ -149,24 +156,6 @@
       gap: 40px;
       z-index: 2;
       opacity: 1;
-    }
-
-    .center-controls button {
-      background: transparent;
-      border: none;
-      color: #f39c12;
-      font-size: 38px;
-      cursor: none;
-      transition: background 0.3s ease;
-    }
-
-    .center-controls button i {
-      hight: 5px;
-      width: 10px;
-    }
-    
-    #play-pause {
-      font-size: 50px;
     }
 
     .loading-spinner {
@@ -178,6 +167,20 @@
       border-radius: 50%;
       box-sizing: border-box;
       animation: rotation 1s linear infinite; /* Smooth spin */
+    }
+
+   .center-controls button {
+     background: transparent;
+     border: none;
+     fill: #f39c12;
+     font-size: 38px;
+     cursor: none;
+     transition: background 0.3s ease;
+   }
+
+    .center-controls button svg {
+      hight: 50px;
+      width: 50px;
     }
     
     #fullscreen {
@@ -363,17 +366,18 @@
       left: 50%;
       transform: translate(-50%, -50%);
       background: rgba(255, 0, 0, 0.8);
-      color: white;
-      padding: 20px;
+      fill: white;
+      padding: 10px;
       border-radius: 10px;
       text-align: center;
       z-index: 10;
       display: none;
     }
 
-    .error-message i {
-      font-size: 40px;
-      margin-bottom: 10px;
+    .error-message svg {
+      width: 40px;
+      higth: 40px;
+      margin-bottom: 5px;
     }
 
     /* Fullscreen mode specific styles */
@@ -409,6 +413,12 @@
       .controls button,
       .controls a {
         font-size: 70px; /* Increase font size for icons */
+      }
+
+      .controls button svg,
+      .controls a svg {
+        width: 35px; /* Set the desired width */
+        height: 35px; /* Set the desired height */
       }
 
       /* Increase size of center controls */
@@ -451,17 +461,20 @@
 
     <!-- Error Message -->
     <div id="error-message" class="error-message hidden">
-      <i class="bi bi-wifi-off"></i>
+      <svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg>
       <p>This video cannot be played because of a problem with your internet connection.<br>(Error Code: 230002)</p>
     </div>
 
     <!-- Center Play Controls -->
     <div class="center-controls" id="center-controls">
-      <button id="rewind"><i class="icon-rewind-10"></i></button>
+      <button id="rewind"><svg class="icon"><use xlink:href="icons-sprite.svg#rewind-10"></use></svg>
+    </button>
       <div class="loading-spinner" id="loading-spinner">
       </div>
-      <button id="play-pause"><i class="bi bi-play-fill"></i></button>
-      <button id="forward"><i class="icon-skip-10"></i></button>
+      <button id="play-pause"><svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>
+      </button>
+      <button id="forward"><svg class="icon"><use xlink:href="icons-sprite.svg#skip-10"></use></svg>
+   </button>
     </div>
 
     <!-- Progress Bar -->
@@ -471,28 +484,29 @@
 
     <!-- Bottom Controls -->
     <div class="controls normal-controls">
-      <button id="volume-toggle"><i class="bi bi-volume-up-fill"></i></button>
+      <button id="volume-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>
+      </button>
       <div class="time" id="time">00:00 / 00:00</div>
-      <a id="download" download="video.mp4"><i class="icon-icon-download"></i></a> <!-- Download button -->
-      <button id="subtitles"><i class="bi bi-badge-cc"></i></button> <!-- Subtitles button -->
-      <button id="settings"><i class="fa-solid fa-gear"></i></button>
-      <button id="pip-toggle"><i class="bi bi-pip"></i></button> <!-- PiP button -->
-      <button id="fullscreen"><i class="icon-fullscreen"></i></button>
+      <a id="download" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a> <!-- Download button -->
+      <button id="subtitles"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="settings"><svg class="icon"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
+      <button id="pip-toggle"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button> <!-- PiP button -->
+      <button id="fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg></button>
     </div>
 
     <!-- Fullscreen Left Controls -->
     <div class="fullscreen-left-controls controls">
-      <button id="volume-toggle-fullscreen"><i class="bi bi-volume-up-fill"></i></button>
+      <button id="volume-toggle-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg></button>
       <div class="time" id="time-fullscreen">00:00 / 00:00</div>
     </div>
 
     <!-- Fullscreen Right Controls -->
     <div class="fullscreen-right-controls controls">
-      <a id="download-fullscreen" download="video.mp4"><i class="icon-icon-download"></i></a>
-      <button id="subtitles-fullscreen"><i class="bi bi-badge-cc"></i></button> <!-- Subtitles button -->
-      <button id="settings-fullscreen"><i class="fa-solid fa-gear"></i></button>
-      <button id="pip-toggle-fullscreen"><i class="bi bi-pip"></i></button> <!-- PiP button -->
-      <button id="fullscreen-exit"><i class="fa-solid fa-compress"></i></button>
+      <a id="download-fullscreen" download="video.mp4"><svg class="icon"><use xlink:href="icons-sprite.svg#download"></use></svg></a>
+      <button id="subtitles-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#captions-off"></use></svg></button> <!-- Subtitles button -->
+      <button id="settings-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#settings"></use></svg></button>
+      <button id="pip-toggle-fullscreen"><svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg></button> <!-- PiP button -->
+      <button id="fullscreen-exit"><svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg></button>
     </div>
 
     <!-- Settings Menu -->
@@ -570,6 +584,7 @@
       const tabs = document.querySelectorAll('.settings-tab');
       const preview = document.getElementById('preview');
       const previewTime = document.getElementById('preview-time');
+
 
       // Array of preview image URLs
       const previewImages = [
@@ -750,33 +765,30 @@
         });
       });
 
-      function handleOptionSelection(selector, type) {
-        const options = document.querySelectorAll(selector);
-        options.forEach(option => {
-          option.addEventListener('click', () => {
-            options.forEach(opt => opt.classList.remove('selected'));
-            option.classList.add('selected');
-            console.log(`Selected ${type}:`, option.dataset[type]);
-            if (type === 'speed') {
-              video.playbackRate = parseFloat(option.dataset.speed);
-            } else if (type === 'caption') {
-              const subtitlesIcon = document.querySelector('#subtitles i');
-              const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen i');
-              if (option.dataset.caption === 'off') {
-                subtitlesIcon.classList.remove('bi-badge-cc-fill');
-                subtitlesIcon.classList.add('bi-badge-cc');
-                subtitlesFullscreenIcon.classList.remove('bi-badge-cc-fill');
-                subtitlesFullscreenIcon.classList.add('bi-badge-cc');
-              } else {
-                subtitlesIcon.classList.remove('bi-badge-cc');
-                subtitlesIcon.classList.add('bi-badge-cc-fill');
-                subtitlesFullscreenIcon.classList.remove('bi-badge-cc');
-                subtitlesFullscreenIcon.classList.add('bi-badge-cc-fill');
-              }
-            }
-          });
-        });
+function handleOptionSelection(selector, type) {
+  const options = document.querySelectorAll(selector);
+  options.forEach(option => {
+    option.addEventListener('click', () => {
+      options.forEach(opt => opt.classList.remove('selected'));
+      option.classList.add('selected');
+      console.log(`Selected ${type}:`, option.dataset[type]);
+
+      if (type === 'speed') {
+        video.playbackRate = parseFloat(option.dataset.speed);
+      } else if (type === 'caption') {
+        const subtitlesIcon = document.querySelector('#subtitles use');
+        const subtitlesFullscreenIcon = document.querySelector('#subtitles-fullscreen use');
+        if (option.dataset.caption === 'off') {
+          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-off');
+        } else {
+          subtitlesIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+          subtitlesFullscreenIcon.setAttribute('xlink:href', 'icons-sprite.svg#captions-on');
+        }
       }
+    });
+  });
+}
 
       handleOptionSelection('#quality-tab li', 'quality');
       handleOptionSelection('#captions-tab li', 'caption');
@@ -919,28 +931,28 @@
         });
       }
 
-      if (playPauseButton) {
-        playPauseButton.addEventListener('click', (event) => {
-          event.stopPropagation();
-          if (firstPlay) {
+  if (playPauseButton) {
+    playPauseButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (firstPlay) {
+        video.play();
+        playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+        firstPlay = false;
+      } else {
+        if (!controlsVisible) {
+          showControls();
+        } else {
+          if (video.paused) {
             video.play();
-            playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
-            firstPlay = false;
+            playPauseButton.innerHTML ='<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
           } else {
-            if (!controlsVisible) {
-              showControls();
-            } else {
-              if (video.paused) {
-                video.play();
-                playPauseButton.innerHTML = '<i class="bi bi-pause-fill"></i>';
-              } else {
-                video.pause();
-                playPauseButton.innerHTML = '<i class="bi bi-play-fill"></i>';
-              }
-            }
+            video.pause();
+            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
           }
-        });
+        }
       }
+    });
+  }
 
       if (rewindButton) {
         rewindButton.addEventListener('click', (event) => {
@@ -966,7 +978,7 @@
 
       const toggleMute = () => {
         video.muted = !video.muted;
-        const volumeIcon = video.muted ? '<i class="bi bi-volume-mute-fill"></i>' : '<i class="bi bi-volume-up-fill"></i>';
+        const volumeIcon = video.muted ? '<svg class="icon"><use xlink:href="icons-sprite.svg#mute"></use></svg>' : '<svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>';
         volumeToggleButton.innerHTML = volumeIcon;
         volumeToggleFullscreenButton.innerHTML = volumeIcon;
       };
@@ -1072,8 +1084,8 @@
           });
         }
 
-        fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
-        fullscreenExitButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+        fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
+        fullscreenExitButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
       };
 
       const exitFullscreen = () => {
@@ -1087,15 +1099,14 @@
           document.msExitFullscreen();
         }
 
-        fullscreenButton.innerHTML = '<i class="icon-fullscreen"></i>';
-        fullscreenExitButton.innerHTML = '<i class="icon-fullscreen"></i>';
+        fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
       };
 
       document.addEventListener('fullscreenchange', function () {
         if (!document.fullscreenElement) {
-          fullscreenButton.innerHTML = '<i class="icon-fullscreen"></i>';
+          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         } else {
-          fullscreenButton.innerHTML = '<i class="fa-solid fa-compress"></i>';
+          fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
         }
       });
 
