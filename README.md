@@ -33,7 +33,7 @@ Contributions are welcome! Please fork the repository and create a pull request 
 
 ## License
 
-This project is currently not licensed. 
+This project is licensed under the MIT License. See the [LICENSE.txt](https://github.com/Ravishka17/Customized-player/blob/main/LICENSE.txt) file for more details. 
 
 ## Acknowledgements
 
