@@ -41,7 +41,9 @@ This project is currently not licensed.
 
 ## Links
 
-- [Live Demo](https://customized-player.vercel.app)
+- [Live Demo 1](https://customized-player.vercel.app)
+
+- [Live Demo 2](https://customized-player.vercel.app/video.html)
 
 ---
 
