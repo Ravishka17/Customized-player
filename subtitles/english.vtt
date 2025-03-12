@@ -28,7 +28,7 @@ WEBVTT
 <i>♪ Spongebob Squarepants ♪</i>
 
 00:00:25.126 --> 00:00:27.860
-<i>♪ If nautical nonsense be something you wish ♪</i>
+<i>♪ If nautical nonsense be <br> something you wish ♪</i>
 
 00:00:27.962 --> 00:00:29.361
 <i>♪ Spongebob Squarepants ♪</i>
@@ -38,3 +38,19 @@ WEBVTT
 
 00:00:31.932 --> 00:00:33.766
 <i>♪ Spongebob Squarepants ♪</i>
+
+00:00:33.868 --> 00:00:35.701
+<i>♪ Ready? <br> Spongebob Squarepants ♪</i>
+
+00:00:35.803 --> 00:00:37.770
+<i>♪ Spongebob Squarepants ♪</i>
+
+00:00:37.872 --> 00:00:39.738
+<i>♪ Spongebob Squarepants ♪</i>
+
+00:00:39.840 --> 00:00:43.409
+<i>♪ Spongebob Squarepants ♪</i>
+
+00:00:43.511 --> 00:00:45.778
+<i>Ah-hah, ha-ha-ha <br> ( laughing )</i>
+
