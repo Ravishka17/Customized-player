@@ -93,12 +93,11 @@
     }
 
     /* Hide the default HTML5 subtitles */
-    ::cue {
-      background: transparent;
-      color: white;
+    video::cue {
+      display: none;
     }
 
-    ::cue(.italic) {
+    #subtitles(.italic) {
       font-style: italic;
     }
 
