@@ -676,19 +676,23 @@
 
       // Function to display subtitles
       function displaySubtitles() {
-        const currentTime = video.currentTime;
-        let currentSubtitleText = '';
+  const currentTime = video.currentTime;
+  let currentSubtitleText = '';
 
-        for (let subtitle of subtitles) {
-          const [start, end] = subtitle.time.split(' --> ').map(time => {
-            const [hours, minutes, seconds] = time.split(':');
-            return parseFloat(hours) * 3600 + parseFloat(minutes) * 60 + parseFloat(seconds);
-          });
+  for (let subtitle of subtitles) {
+    const [start, end] = subtitle.time.split(' --> ').map(time => {
+      const [hours, minutes, seconds] = time.split(':');
+      return parseFloat(hours) * 3600 + parseFloat(minutes) * 60 + parseFloat(seconds);
+    });
 
-          if (currentTime >= start && currentTime <= end) {
-            currentSubtitleText = subtitle.text;
-          }
-        }
+    if (currentTime >= start && currentTime <= end) {
+      currentSubtitleText = subtitle.text;
+    }
+  }
+
+  // Use innerHTML instead of textContent to render HTML tags
+  subtitlesContainer.innerHTML = currentSubtitleText;
+}
 
         subtitlesContainer.textContent = currentSubtitleText;
       }
