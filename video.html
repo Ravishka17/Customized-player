@@ -1321,6 +1321,11 @@
         previewTime.style.left = `${clientX - previewTime.offsetWidth / 2}px`;
       }
     });
+
+  // Disable right-click on the video element
+  video.addEventListener("contextmenu", (event) => {
+    event.preventDefault();
+  });
   </script>
 </body>
 </html>
