@@ -30,16 +30,6 @@
       overflow: hidden;
     }
 
-    .overlay {
-      position: absolute;
-      top: 0;
-      left: 0;
-      width: 100%;
-      height: 100%;
-      background: transparent;
-      z-index: 10; /* Ensure overlay is above video */
-    }
-
     .preview {
       position: absolute;
       bottom: 100px; /* Position it above the progress bar */
@@ -640,7 +630,6 @@
       const tabs = document.querySelectorAll('.settings-tab');
       const preview = document.getElementById('preview');
       const previewTime = document.getElementById('preview-time');
-      const overlay = document.querySelector(".overlay");
 
       let subtitles = []; // Subtitles are OFF by default
 
@@ -1334,48 +1323,6 @@
       }
     });
 
-// Block context menu on both video and overlay
-    video.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-    });
-    overlay.addEventListener("contextmenu", (event) => {
-      event.preventDefault();
-    });
-
-    // Detect long-press to block context menu
-    let touchTimer;
-    overlay.addEventListener("touchstart", (event) => {
-      // Start a timer to detect long-press
-      touchTimer = setTimeout(() => {
-        event.preventDefault(); // Block long-press context menu
-      }, 800); // 800ms threshold for long-press
-    });
-
-    // Clear timer if touch ends or moves (short taps/drags pass through)
-    overlay.addEventListener("touchend", (event) => {
-      clearTimeout(touchTimer);
-      // Allow the event to propagate to the video for controls
-      video.dispatchEvent(new Event("touchend", { bubbles: true }));
-    });
-
-    overlay.addEventListener("touchmove", (event) => {
-      clearTimeout(touchTimer);
-      // Allow seeking or other drag actions to pass through
-      video.dispatchEvent(new Event("touchmove", { bubbles: true }));
-    });
-
-    // Pass click events to video for play/pause
-    overlay.addEventListener("click", (event) => {
-      video.dispatchEvent(new Event("click", { bubbles: true }));
-    });
-
-    // Pass double-click for fullscreen
-    overlay.addEventListener("dblclick", (event) => {
-      video.dispatchEvent(new Event("dblclick", { bubbles: true }));
-      if (video.requestFullscreen) {
-        video.requestFullscreen();
-      }
-    });
   </script>
 </body>
 </html>
