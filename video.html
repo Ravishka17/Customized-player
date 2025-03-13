@@ -322,14 +322,14 @@
       flex-direction: column; /* Explicitly set flex direction */
       z-index: 1000;
       box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      overflow-y: auto;
+      overflow-y: scroll;
+      -ms-overflow-style: none;
       border-bottom: 1px solid #555;
       user-select: none;
     }
 
     .settings-menu::-webkit-scrollbar {
-      width: 0; /* For WebKit-based   browsers (Chrome, Safari) */
-      height: 0;
+      display: none; /* For WebKit-based   browsers (Chrome, Safari) */
     }
 
     .settings-menu {
