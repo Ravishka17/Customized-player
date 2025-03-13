@@ -1322,29 +1322,32 @@
       }
     });
 
-  // Disable right-click on desktop
-  video.addEventListener("contextmenu", (event) => {
-    event.preventDefault();
-  });
+    var message = "Right-click or long-press is disabled!";
 
-  // Disable long-press context menu on mobile
-  video.addEventListener("touchstart", (event) => {
-    // Check if it's a long press by tracking duration
-    let touchTimer = setTimeout(() => {
-      // Do nothing here; we just want to detect long press
-    }, 800); // 800ms is a typical long-press threshold
+    // Target the video element
+    const video = document.getElementById("myVideo");
 
-    // Clear timeout if touch ends or moves
-    video.addEventListener("touchend", () => clearTimeout(touchTimer), { once: true });
-    video.addEventListener("touchmove", () => clearTimeout(touchTimer), { once: true });
-  });
+    // Desktop: Disable right-click
+    video.oncontextmenu = function(event) {
+      alert(message);
+      return false; // Blocks context menu in some browsers
+    };
 
-  // Optional: Prevent default touch behavior
-  video.addEventListener("touchend", (event) => {
-    if (event.cancelable) {
-      event.preventDefault();
-    }
-  });
+    // Mobile: Handle touch events to block long-press
+    video.addEventListener("touchstart", function(event) {
+      let touchTimer = setTimeout(() => {
+        alert(message);
+      }, 800); // Simulate long-press detection
+
+      // Cancel if touch ends or moves
+      video.addEventListener("touchend", () => clearTimeout(touchTimer), { once: true });
+      video.addEventListener("touchmove", () => clearTimeout(touchTimer), { once: true });
+    });
+
+    // Additional safeguard: Prevent default context menu
+    video.addEventListener("contextmenu", (event) => {
+      event.preventDefault(); // Modern way to block context menu
+    });
   </script>
 </body>
 </html>
