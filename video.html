@@ -356,13 +356,21 @@
       z-index: 10;
     }
 
-    .settings-header button svg {
+    .settings-header button {
       background: none;
       border: none;
       fill: white;
+      user-select: none;
+    }
+
+    .settings-header button svg,
+    .settings-header button i,
+    .settings-header button span {
+      fill: white;
+      color: white;
       width: 20px;
       height: 20px;
-      user-select: none;
+      font-size: 20px;
     }
 
     .settings-header button.active {
