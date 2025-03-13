@@ -309,39 +309,45 @@
       font-size: 30px; /* Adjust font size */
     }
 
-/* Ensure the settings menu has proper overflow handling */
-.settings-menu {
-  position: absolute;
-  top: 1%;
-  right: 5%;
-  background-color: #333;
-  color: white;
-  width: 250px;
-  height: 190px;
-  display: none;
-  flex-direction: column;
-  z-index: 1000;
-  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-  overflow-y: auto; /* Changed from scroll to auto for better behavior */
-  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-  scrollbar-width: none; /* Hide scrollbar in Firefox */
-}
+    /* Ensure the settings menu has proper overflow handling */
+    .settings-menu {
+      position: absolute;
+      top: 1%;
+      right: 5%;
+      background-color: #333;
+      color: white;
+      width: 250px;
+      height: 190px;
+      display: none;
+      flex-direction: column;
+      z-index: 1000;
+      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+      overflow-y: auto; /* Changed from scroll to auto for better behavior */
+      -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+       scrollbar-width: none; /* Hide scrollbar in Firefox */
+      }
 
-/* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */
-.settings-menu::-webkit-scrollbar {
-  display: none;
-  width: 0 !important; /* Forcefully hide the scrollbar */
-  background: transparent; /* Ensure no background shows */
-}
+      /* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */
+      .settings-menu::-webkit-scrollbar {
+        display: none;
+        width: 0 !important; /* Forcefully hide the scrollbar */
+        background: transparent; /* Ensure no background shows */
+      }
 
-/* Ensure the settings-body handles the scrolling content */
-.settings-body {
-  flex: 1;
-  background-color: #333;
-  padding: 10px 5px;
-  overflow-y: auto; /* Ensure scrolling works within the body */
-  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-}
+      .settings-menu svg {
+        width: 20px;
+        height: 20px;
+        fill: #f39c12;  
+      }
+
+      /* Ensure the settings-body handles the scrolling content */
+     .settings-body {
+       flex: 1;
+       background-color: #333;
+       padding: 10px 5px;
+       overflow-y: auto; /* Ensure scrolling works within the body */
+       -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+    }
 
     /* Toolbar Header */
     .settings-header {
@@ -568,7 +574,7 @@
       <div class="settings-header">
         <div style="text-align: center;">
         </div>
-        <button class="active" data-tab="quality-tab"> <i class="bi bi-reception-4" style="font-size: 20px;"></i> </button>
+        <button class="active" data-tab="quality-tab"> <use xlink:href="icons-sprite.svg#quality"></use></svg></button>
         <button data-tab="captions-tab"> <i class="bi bi-cc-square" style="font-size: 20px;"></i> 
         </button>
         <button data-tab="speed-tab"> <span class="material-symbols-outlined" style="font-size: 20px;">acute</span> 
