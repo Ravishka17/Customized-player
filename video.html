@@ -1322,9 +1322,28 @@
       }
     });
 
-  // Disable right-click on the video element
+  // Disable right-click on desktop
   video.addEventListener("contextmenu", (event) => {
     event.preventDefault();
+  });
+
+  // Disable long-press context menu on mobile
+  video.addEventListener("touchstart", (event) => {
+    // Check if it's a long press by tracking duration
+    let touchTimer = setTimeout(() => {
+      // Do nothing here; we just want to detect long press
+    }, 800); // 800ms is a typical long-press threshold
+
+    // Clear timeout if touch ends or moves
+    video.addEventListener("touchend", () => clearTimeout(touchTimer), { once: true });
+    video.addEventListener("touchmove", () => clearTimeout(touchTimer), { once: true });
+  });
+
+  // Optional: Prevent default touch behavior
+  video.addEventListener("touchend", (event) => {
+    if (event.cancelable) {
+      event.preventDefault();
+    }
   });
   </script>
 </body>
