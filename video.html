@@ -30,6 +30,17 @@
       overflow: hidden;
     }
 
+    .overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      width: 100%;
+      height: 100%;
+      background: transparent;
+      z-index: 10; /* Ensure overlay is above video */
+      touch-action: none; /* Prevent default touch behaviors */
+    }
+
     .preview {
       position: absolute;
       bottom: 100px; /* Position it above the progress bar */
@@ -498,6 +509,7 @@
   <div class="video-container" id="video-container">
     <video id="video" src="https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg">
   </video>
+<div class="overlay"></div>
  <div id="subtitles-container"></div>
     <!-- Add this inside the video-container div -->
     <div id="preview" class="preview"></div>
@@ -1322,31 +1334,42 @@
       }
     });
 
-    var message = "Right-click or long-press is disabled!";
-
-    // Target the video element
-    const video = document.getElementById("myVideo");
-
-    // Desktop: Disable right-click
-    video.oncontextmenu = function(event) {
-      alert(message);
-      return false; // Blocks context menu in some browsers
-    };
-
-    // Mobile: Handle touch events to block long-press
-    video.addEventListener("touchstart", function(event) {
-      let touchTimer = setTimeout(() => {
-        alert(message);
-      }, 800); // Simulate long-press detection
-
-      // Cancel if touch ends or moves
-      video.addEventListener("touchend", () => clearTimeout(touchTimer), { once: true });
-      video.addEventListener("touchmove", () => clearTimeout(touchTimer), { once: true });
+    // Block context menu on both video and overlay
+    video.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
+    });
+    overlay.addEventListener("contextmenu", (event) => {
+      event.preventDefault();
     });
 
-    // Additional safeguard: Prevent default context menu
-    video.addEventListener("contextmenu", (event) => {
-      event.preventDefault(); // Modern way to block context menu
+    // Block touch events on overlay
+    overlay.addEventListener("touchstart", (event) => {
+      event.preventDefault(); // Block touch start
+      event.stopPropagation(); // Prevent event from bubbling
+    });
+    overlay.addEventListener("touchmove", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+    overlay.addEventListener("touchend", (event) => {
+      event.preventDefault();
+      event.stopPropagation();
+    });
+
+    // Allow basic video controls (e.g., play/pause) through overlay
+    overlay.addEventListener("click", (event) => {
+      if (video.paused) {
+        video.play();
+      } else {
+        video.pause();
+      }
+    });
+
+    // Optional: Handle fullscreen toggle if supported
+    overlay.addEventListener("dblclick", () => {
+      if (video.requestFullscreen) {
+        video.requestFullscreen();
+      }
     });
   </script>
 </body>
