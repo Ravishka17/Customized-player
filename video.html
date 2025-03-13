@@ -327,6 +327,19 @@
       user-select: none;
     }
 
+    .settings-menu {
+      overflow: scroll; /* Allow scrolling */
+    }
+
+    .settings-menu::-webkit-scrollbar {
+      display: none; /* For WebKit-based   browsers (Chrome, Safari) */
+    }
+
+    .settings-menu {
+      -ms-overflow-style: none;  /* For Internet Explorer */
+      scrollbar-width: none;  /* For Firefox */
+    }
+
     /* Toolbar Header */
     .settings-header {
       display: flex;
