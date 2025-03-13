@@ -309,33 +309,39 @@
       font-size: 30px; /* Adjust font size */
     }
 
-    /* Settings Menu */
-    .settings-menu {
-      position: absolute;
-      top: 1%;
-      right: 5%;
-      background-color: #333;
-      color: white;
-      width: 250px;
-      height: 190px;
-      display: none; /* Default state */
-      flex-direction: column; /* Explicitly set flex direction */
-      z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      overflow-y: scroll;
-      -ms-overflow-style: none;
-      border-bottom: 1px solid #555;
-      user-select: none;
-    }
+/* Ensure the settings menu has proper overflow handling */
+.settings-menu {
+  position: absolute;
+  top: 1%;
+  right: 5%;
+  background-color: #333;
+  color: white;
+  width: 250px;
+  height: 190px;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow-y: auto; /* Changed from scroll to auto for better behavior */
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
 
-    .settings-menu::-webkit-scrollbar {
-      display: none; /* For WebKit-based   browsers (Chrome, Safari) */
-    }
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */
+.settings-menu::-webkit-scrollbar {
+  display: none;
+  width: 0 !important; /* Forcefully hide the scrollbar */
+  background: transparent; /* Ensure no background shows */
+}
 
-    .settings-menu {
-      -ms-overflow-style: none;  /* For Internet Explorer */
-      scrollbar-width: none;  /* For Firefox */
-    }
+/* Ensure the settings-body handles the scrolling content */
+.settings-body {
+  flex: 1;
+  background-color: #333;
+  padding: 10px 5px;
+  overflow-y: auto; /* Ensure scrolling works within the body */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
 
     /* Toolbar Header */
     .settings-header {
@@ -368,14 +374,6 @@
       font-size: 16px;
       margin-right: 10px;
       user-select: none;
-    }
-
-     /* Content Area */
-    .settings-body {
-      flex: 1; /* Ensure it takes remaining space */
-      background-color: #333;
-      padding: 10px 5px;
-      overflow-y: auto; /* Ensure scrolling works */
     }
 
     /* Tabs */
