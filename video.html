@@ -267,10 +267,11 @@
       justify-content: flex-end;
     }
 
-    .video-container:fullscreen .fullscreen-left-controls button,
-    .video-container:fullscreen .fullscreen-right-controls button {
+    .video-container:fullscreen .fullscreen-left-controls button svg,
+    .video-container:fullscreen .fullscreen-right-controls button svg {
       margin: 0 5px;
-      font-size: 30px;
+      width: 40px;
+      height: 40px;
       color: #f39c12;
     }
 
@@ -441,9 +442,10 @@
     }
 
       /* Increase size of fullscreen controls */
-      .fullscreen-left-controls button,
-      .fullscreen-right-controls button {
-        font-size: 30px; /* Increase font size for icons */
+      .fullscreen-left-controls button svg,
+      .fullscreen-right-controls button svg {
+        width: 40px; /* Increase font size for icons */
+        height: 40px;
       }
 
     /* Media query for larger screens (desktop) */
@@ -484,7 +486,7 @@
 
       .center-controls button svg {
         height: 180px; /* Increase icon size */
-       width: 180px;
+        width: 180px;
       }
 
       .time {
