@@ -80,7 +80,7 @@
     }
 
     /* Adjust for fullscreen mode */
-    .video-container:fullscreen            #subtitles-container {
+    .video-container:fullscreen #subtitles-container {
        bottom: 20px; /* Default position in      fullscreen when controls are hidden */
     }
 
@@ -497,7 +497,19 @@
       #fullscreen {
         font-size: 70px;
       }
-    }
+
+      #subtitles-container {
+        font-size: 36px; /* Larger font size for desktop */
+      }
+
+      .video-container.show-controls #subtitles-container {
+        bottom: 130px; /* Position above the progress bar (which is at 110px) */
+      }
+
+      .video-container:fullscreen.show-controls #subtitles-container {
+        bottom: 130px; /* Ensure it stays above the progress bar in fullscreen desktop */
+      }
+        }
   </style>
 </head>
 <body>
