@@ -334,65 +334,65 @@
       }
 
       /* Ensure the settings-body handles the scrolling content */
-     .settings-body {
-       flex: 1;
-       background-color: #333;
-       padding: 10px 5px;
-       overflow-y: auto; /* Ensure scrolling works within the body */
-       -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-    }
+      .settings-body {
+        flex: 1;
+        background-color: #333;
+        padding: 10px 5px;
+        overflow-y: auto; /* Ensure scrolling works within the body */
+        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+     }
 
-    /* Toolbar Header */
-    .settings-header {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: #222;
-      padding: 10px; /* Adjusted padding for consistency */
-      border-bottom: 1px solid #555;
-      position: sticky;
-      top: 0;
-      z-index: 10;
-    }
+     /* Toolbar Header */
+     .settings-header {
+       display: flex;
+       justify-content: space-between;
+       align-items: center;
+       background: #222;
+       padding: 10px; /* Adjusted padding for consistency */
+       border-bottom: 1px solid #555;
+       position: sticky;
+       top: 0;
+       z-index: 10;
+     }
 
-    .settings-header button {
-      background: none;
-      border: none;
-      user-select: none;
-    }
+     .settings-header button {
+       background: none;
+       border: none;
+       user-select: none;
+     }
 
-    .settings-header button svg,
-    .settings-header button span {
-      fill: white;    
-      width: 25px;
-      height: 25px;
-    }
+     .settings-header button svg,
+     .settings-header button span {
+       fill: white;    
+       width: 25px;
+       height: 25px;
+     }
 
-    .settings-header button.active {
-      border-bottom: 2px solid #f39c12;
-      font-weight: bold;
-    }
+     .settings-header button.active {
+       border-bottom: 2px solid #f39c12;
+       font-weight: bold;
+     }
 
-    .close-settings svg {
-      fill: white;
-      width: 25px;
-      height: 25px;
-      margin-right: 10px;
-      user-select: none;
-    }
+     .close-settings svg {
+       fill: white;
+       width: 25px;
+       height: 25px;
+       margin-right: 10px;
+       user-select: none;
+     }
 
-    /* Tabs */
-    .settings-tab {
-      display: none;
-      list-style: none;
-      margin: 0;
-      padding: 0;
-    }
+     /* Tabs */
+     .settings-tab {
+       display: none;
+       list-style: none;
+       margin: 0;
+       padding: 0;
+     }
 
-    .settings-tab li {
-      margin-left: 25px;
-      padding: 8px;
-      position: relative;
+     .settings-tab li {
+       margin-left: 25px;
+       padding: 8px;
+       position: relative;
     }
 
     .settings-tab li.selected::before {
@@ -442,12 +442,21 @@
       display: none;
     }
 
-      /* Increase size of fullscreen controls */
-      .fullscreen-left-controls button svg,
-      .fullscreen-right-controls button svg {
-        width: 40px; /* Increase font size for icons */
-        height: 40px;
-      }
+    .video-container:fullscreen .settings-tab li {
+      font-size: 18px;
+      padding: 8px;
+    }
+
+    .video-container:fullscreen .settings-tab li.selected::before {
+      font-size: 24px;
+      margin-left: -30px;
+
+     /* Increase size of fullscreen controls */
+     .fullscreen-left-controls button svg,
+     .fullscreen-right-controls button svg {
+       width: 40px; /* Increase font size for icons */
+       height: 40px;
+     }
 
     /* Media query for larger screens (desktop) */
     @media (min-width: 768px) {
