@@ -450,6 +450,7 @@ document.addEventListener('DOMContentLoaded', function() {
         video.addEventListener('play', () => {
           errorMessage.style.display = 'none';
         });
+      }
 
   if (playPauseButton) {
     playPauseButton.addEventListener('click', (event) => {
