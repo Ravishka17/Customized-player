@@ -443,15 +443,16 @@ document.addEventListener('DOMContentLoaded', function() {
           timeDisplayFullscreen.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
         });
 
-video.addEventListener('play', () => {
-  console.log('Play event triggered');
-  errorMessage.style.display = 'none';
-});
-
-video.addEventListener('error', () => {
-  console.log('Error event triggered');
-  errorMessage.style.display = 'block';
-});
+        video.addEventListener('play', () => {
+         console.log('Play event triggered');
+         errorMessage.style.display = 'none';
+       });
+            
+       video.addEventListener('error', () => {
+        console.log('Error event triggered');
+        errorMessage.style.display = 'block';
+       });
+    }       
 
   if (playPauseButton) {
     playPauseButton.addEventListener('click', (event) => {
