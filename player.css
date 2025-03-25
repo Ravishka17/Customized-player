@@ -1,16 +1,4 @@
-    /* Base styles */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f4f4f4;
-      margin: 0;
-      display: flex;
-      justify-content: center;
-      align-items: center;
-      height: 100vh;
-      user-select: none;
-    }
-
-    .video-container {
+.video-container {
       position: relative;
       width: 382px; /* Mobile view width */
       height: 250px; /* Mobile view height */
