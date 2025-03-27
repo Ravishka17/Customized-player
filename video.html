@@ -875,8 +875,18 @@
   video.addEventListener("pause", () => {
     navigator.mediaSession.playbackState = "paused";
   });
-}
 
+  video.addEventListener("enterpictureinpicture", () => {
+  navigator.mediaSession.metadata.title += " (PiP)";
+  updatePositionState();
+ });
+        
+video.addEventListener("leavepictureinpicture", () => {
+  navigator.mediaSession.metadata.title = "SpongeBob: Help Wanted"; // Reset
+  updatePositionState();
+});
+}
+      
       function handleOptionSelection(selector, type) {
         const options = document.querySelectorAll(selector);
         options.forEach(option => {
