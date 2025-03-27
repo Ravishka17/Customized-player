@@ -474,7 +474,7 @@
 
       /* Increase size of progress bar */
       .progress-bar {
-        bottom: 30px; /* Move it up a bit */
+        bottom: 100px; /* Move it up a bit */
         height: 15px; /* Increase height */
       }
 
