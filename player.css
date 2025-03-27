@@ -1,3 +1,7 @@
+ body {
+       margin: 0;
+       padding: 0;
+ }
 .video-container {
       position: relative;
       width: 382px; /* Mobile view width */
