@@ -46,5 +46,3 @@ This project is licensed under the MIT License. See the [LICENSE.txt](https://gi
 - [Live Demo 2](https://customized-player.vercel.app/video.html)
 
 ---
-
-Feel free to modify this README file to better fit the specifics of your project!
