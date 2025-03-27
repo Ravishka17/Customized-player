@@ -464,6 +464,9 @@
 
     /* Media query for larger screens (desktop) */
     @media (min-width: 768px) {
+       body {
+        height: 120vh;
+       }
       .video-container {
         width: 1200px; /* Desktop view width */
         height: 100%; /* Desktop view height */
