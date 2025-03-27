@@ -830,18 +830,14 @@
         });
       });
 
-      if ("mediaSession" in navigator) {
-  // Set initial metadata
+     if ("mediaSession" in navigator) {
+  // Set initial metadata right away
   navigator.mediaSession.metadata = new MediaMetadata({
     title: "SpongeBob: Help Wanted",
     artist: "Nickelodeon",
     album: "SpongeBob SquarePants Season 1",
     artwork: [
-      {
-        src: "https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg",
-        sizes: "512x384",
-        type: "image/jpeg",
-      },
+      { src: "https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg", sizes: "512x384", type: "image/jpeg" },
     ],
   });
 
@@ -851,41 +847,59 @@
     playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
     navigator.mediaSession.playbackState = "playing";
   });
-
   navigator.mediaSession.setActionHandler("pause", () => {
     video.pause();
     playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
     navigator.mediaSession.playbackState = "paused";
   });
-
-  // Optional: Add seek actions
   navigator.mediaSession.setActionHandler("seekbackward", () => {
     video.currentTime = Math.max(video.currentTime - 10, 0);
   });
-
   navigator.mediaSession.setActionHandler("seekforward", () => {
     video.currentTime = Math.min(video.currentTime + 10, video.duration);
   });
 
+  // Position state for seek bar
+  function updatePositionState() {
+    if (video.duration) { // Ensure duration is available
+      navigator.mediaSession.setPositionState({
+        duration: video.duration,
+        playbackRate: video.playbackRate,
+        position: video.currentTime,
+      });
+    }
+  }
+
   // Sync with video events
   video.addEventListener("play", () => {
     navigator.mediaSession.playbackState = "playing";
+    updatePositionState(); // Ensure position is set
   });
-
   video.addEventListener("pause", () => {
     navigator.mediaSession.playbackState = "paused";
+    updatePositionState();
+  });
+  video.addEventListener("timeupdate", updatePositionState);
+  video.addEventListener("loadedmetadata", () => {
+    updatePositionState(); // Set initial duration
   });
 
+  // PiP-specific updates
   video.addEventListener("enterpictureinpicture", () => {
-  navigator.mediaSession.metadata.title += " (PiP)";
-  updatePositionState();
- });
-        
-video.addEventListener("leavepictureinpicture", () => {
-  navigator.mediaSession.metadata.title = "SpongeBob: Help Wanted"; // Reset
-  updatePositionState();
-});
-}
+    navigator.mediaSession.metadata.title = "SpongeBob: Help Wanted (PiP)";
+    updatePositionState();
+  });
+  video.addEventListener("leavepictureinpicture", () => {
+    navigator.mediaSession.metadata.title = "SpongeBob: Help Wanted";
+    updatePositionState();
+  });
+
+  // Ensure notification activates on first play
+  video.addEventListener("playing", () => {
+    navigator.mediaSession.playbackState = "playing";
+    updatePositionState();
+  });
+} 
       
       function handleOptionSelection(selector, type) {
         const options = document.querySelectorAll(selector);
