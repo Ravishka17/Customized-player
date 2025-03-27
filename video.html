@@ -830,6 +830,35 @@
         });
       });
 
+      if ("mediaSession" in navigator) {
+  // Set metadata for the notification
+  navigator.mediaSession.metadata = new MediaMetadata({
+    title: "My Custom Video",
+    artist: "Your Name",
+    album: "Video Collection",
+    artwork: [
+      {
+        src: "https://example.com/thumbnail.jpg",
+        sizes: "96x96",
+        type: "image/jpeg",
+      },
+      {
+        src: "https://example.com/thumbnail-large.jpg",
+        sizes: "512x512",
+        type: "image/jpeg",
+      },
+    ],
+  });
+
+  // Add action handlers (e.g., play/pause)
+  navigator.mediaSession.setActionHandler("play", () => {
+    videoElement.play();
+  });
+
+  navigator.mediaSession.setActionHandler("pause", () => {
+    videoElement.pause();
+  });
+
       function handleOptionSelection(selector, type) {
         const options = document.querySelectorAll(selector);
         options.forEach(option => {
