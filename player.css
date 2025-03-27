@@ -3,7 +3,7 @@
       width: 382px; /* Mobile view width */
       height: 250px; /* Mobile view height */
       background-color: #000;
-      overflow: hidden;
+      align-items: center;
     }
 
     .preview {
