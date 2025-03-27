@@ -11,7 +11,7 @@
 .video-container {
       position: relative;
       width: 382px; /* Mobile view width */
-      height: auto; /* Mobile view height */
+      height: 100%; /* Mobile view height */
       background-color: #000;
     }
 
