@@ -9,7 +9,7 @@
     }
 
     .video-container {
-      position: absolute;
+      position: relative;
       width: 382px; /* Mobile view width */
       height: 100%; /* Mobile view height */
       background-color: #000;
@@ -298,8 +298,8 @@
 
     /* Ensure the settings menu has proper overflow handling */
     .settings-menu {
-      position: relative;
-      top: 38%;
+      position: aabsolute;
+      top: 35%;
       right: 5%;
       background-color: #333;
       color: white;
