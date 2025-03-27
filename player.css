@@ -464,12 +464,9 @@
 
     /* Media query for larger screens (desktop) */
     @media (min-width: 768px) {
-       body {
-        height: 90vh;
-       }
       .video-container {
-        width: 1200px; /* Desktop view width */
-        height: 200%; /* Desktop view height */
+        max-width: 1200px; /* Desktop view width */
+        height: 120%; /* Desktop view height */
       }
 
       /* Increase size of progress bar */
