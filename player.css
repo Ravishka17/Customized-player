@@ -299,7 +299,7 @@
     /* Ensure the settings menu has proper overflow handling */
     .settings-menu {
       position: absolute;
-      top: 40%;
+      top: 38%;
       right: 5%;
       background-color: #333;
       color: white;
