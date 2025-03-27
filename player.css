@@ -1,7 +1,7 @@
  body {
        margin: 0;
        padding: 0;
-       height: 90vh;
+       height: 95vh;
        display: flex;
        align-items: center;
        justify-content: center;
@@ -471,7 +471,7 @@
 
       /* Increase size of progress bar */
       .progress-bar {
-        bottom: 110px; /* Move it up a bit */
+        bottom: 10px; /* Move it up a bit */
         height: 15px; /* Increase height */
       }
 
@@ -481,7 +481,7 @@
 
       /* Increase size of bottom controls */
       .controls {
-        bottom: 10px;
+        bottom: 5px;
         font-size: 30px; /* Increase font size for icons */
       }
       
