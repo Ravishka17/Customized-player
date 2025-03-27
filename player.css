@@ -1,4 +1,4 @@
- body {
+     body {
        margin: 0;
        padding: 0;
        height: 90vh;
@@ -6,9 +6,9 @@
        align-items: center;
        justify-content: center;
        background-color: #000;
+    }
 
- }
-.video-container {
+    .video-container {
       position: absolute;
       width: 382px; /* Mobile view width */
       height: 100%; /* Mobile view height */
