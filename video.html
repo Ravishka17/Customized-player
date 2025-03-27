@@ -831,33 +831,51 @@
       });
 
       if ("mediaSession" in navigator) {
-  // Set metadata for the notification
+  // Set initial metadata
   navigator.mediaSession.metadata = new MediaMetadata({
-    title: "My Custom Video",
-    artist: "Your Name",
-    album: "Video Collection",
+    title: "SpongeBob: Help Wanted",
+    artist: "Nickelodeon",
+    album: "SpongeBob SquarePants Season 1",
     artwork: [
       {
-        src: "https://example.com/thumbnail.jpg",
-        sizes: "96x96",
-        type: "image/jpeg",
-      },
-      {
-        src: "https://example.com/thumbnail-large.jpg",
-        sizes: "512x512",
+        src: "https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg",
+        sizes: "512x384",
         type: "image/jpeg",
       },
     ],
   });
 
-  // Add action handlers (e.g., play/pause)
+  // Action handlers
   navigator.mediaSession.setActionHandler("play", () => {
-    videoElement.play();
+    video.play();
+    playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
+    navigator.mediaSession.playbackState = "playing";
   });
 
   navigator.mediaSession.setActionHandler("pause", () => {
-    videoElement.pause();
+    video.pause();
+    playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
+    navigator.mediaSession.playbackState = "paused";
   });
+
+  // Optional: Add seek actions
+  navigator.mediaSession.setActionHandler("seekbackward", () => {
+    video.currentTime = Math.max(video.currentTime - 10, 0);
+  });
+
+  navigator.mediaSession.setActionHandler("seekforward", () => {
+    video.currentTime = Math.min(video.currentTime + 10, video.duration);
+  });
+
+  // Sync with video events
+  video.addEventListener("play", () => {
+    navigator.mediaSession.playbackState = "playing";
+  });
+
+  video.addEventListener("pause", () => {
+    navigator.mediaSession.playbackState = "paused";
+  });
+}
 
       function handleOptionSelection(selector, type) {
         const options = document.querySelectorAll(selector);
