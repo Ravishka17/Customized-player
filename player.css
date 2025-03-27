@@ -468,8 +468,8 @@
         height: 90vh;
        }
       .video-container {
-        width: 1900px; /* Desktop view width */
-        height: 100%; /* Desktop view height */
+        width: 1200px; /* Desktop view width */
+        height: 200%; /* Desktop view height */
       }
 
       /* Increase size of progress bar */
