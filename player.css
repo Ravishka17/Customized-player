@@ -1,7 +1,7 @@
      body {
        margin: 0;
        padding: 0;
-       height: 90vh;
+       height: 91vh;
        display: flex;
        align-items: center;
        justify-content: center;
@@ -471,7 +471,7 @@
 
       /* Increase size of progress bar */
       .progress-bar {
-        bottom: 105px; /* Move it up a bit */
+        bottom: 110px; /* Move it up a bit */
         height: 15px; /* Increase height */
       }
 
