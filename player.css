@@ -36,6 +36,7 @@
       height: 100%;
       object-fit: cover; /* Cover the entire container */
       display: block;
+      align-items: center;
     }
 
     /* Custom Subtitle Styling */
