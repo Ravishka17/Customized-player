@@ -466,7 +466,7 @@
     @media (min-width: 768px) {
       .video-container {
         width: 1200px; /* Desktop view width */
-        height: 800px; /* Desktop view height */
+        height: 100%; /* Desktop view height */
       }
 
       /* Increase size of progress bar */
