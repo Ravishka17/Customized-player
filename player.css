@@ -465,7 +465,7 @@
     /* Media query for larger screens (desktop) */
     @media (min-width: 768px) {
       .video-container {
-        max-width: 1200px; /* Desktop view width */
+        width: 1200px; /* Desktop view width */
         height: 120%; /* Desktop view height */
       }
 
