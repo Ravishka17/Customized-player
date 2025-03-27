@@ -481,7 +481,7 @@
 
       /* Increase size of bottom controls */
       .controls {
-        bottom: 5px;
+        bottom: 0px;
         font-size: 30px; /* Increase font size for icons */
       }
       
