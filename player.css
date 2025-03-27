@@ -299,7 +299,7 @@
     /* Ensure the settings menu has proper overflow handling */
     .settings-menu {
       position: absolute;
-      top: 35%;
+      top: 30%;
       right: 5%;
       background-color: #333;
       color: white;
@@ -332,7 +332,7 @@
 
      /* Toolbar Header */
      .settings-header {
-       display: block;
+       display: flex;
        justify-content: space-between;
        align-items: center;
        background: #222;
