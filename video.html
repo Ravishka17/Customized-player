@@ -831,6 +831,7 @@
       });
     
       if ("mediaSession" in navigator) {
+  // Set initial metadata for the notification
   navigator.mediaSession.metadata = new MediaMetadata({
     title: "SpongeBob: Help Wanted",
     artist: "Nickelodeon",
@@ -840,63 +841,32 @@
     ],
   });
 
+  // Action handlers for play and pause
   navigator.mediaSession.setActionHandler("play", () => {
+    const video = document.getElementById('video');
+    const playPauseButton = document.getElementById('play-pause');
     video.play();
     playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
     navigator.mediaSession.playbackState = "playing";
   });
+
   navigator.mediaSession.setActionHandler("pause", () => {
+    const video = document.getElementById('video');
+    const playPauseButton = document.getElementById('play-pause');
     video.pause();
     playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
     navigator.mediaSession.playbackState = "paused";
   });
 
-  function updatePositionState() {
-    if (video.duration) {
-      navigator.mediaSession.setPositionState({
-        duration: video.duration,
-        playbackRate: video.playbackRate,
-        position: video.currentTime,
-      });
-    }
-  }
-
+  // Sync playback state with video events
+  const video = document.getElementById('video');
   video.addEventListener("play", () => {
     navigator.mediaSession.playbackState = "playing";
-    updatePositionState();
   });
   video.addEventListener("pause", () => {
     navigator.mediaSession.playbackState = "paused";
-    updatePositionState();
   });
-  video.addEventListener("timeupdate", updatePositionState);
-  video.addEventListener("loadedmetadata", updatePositionState);
-  video.addEventListener("enterpictureinpicture", updatePositionState);
-  video.addEventListener("leavepictureinpicture", updatePositionState);
 }
-
-async function togglePiP() {
-  if (!controlsVisible) {
-    showControls();
-    return;
-  }
-  try {
-    if (document.pictureInPictureElement) {
-      await document.exitPictureInPicture();
-    } else {
-      if (video.paused) await video.play();
-      await video.requestPictureInPicture();
-    }
-  } catch (error) {
-    console.error('PiP Toggle Error:', error);
-    if (error.name === "NotSupportedError") {
-      alert("Picture-in-Picture is not supported for this video or browser.");
-    }
-  }
-}
-
-pipToggleButton.addEventListener('click', togglePiP);
-pipToggleFullscreenButton.addEventListener('click', togglePiP);
   
       
       function handleOptionSelection(selector, type) {
