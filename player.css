@@ -504,9 +504,8 @@
       }
 
       .loading-spinner {
-           width: 76px;
-           height: 76px;
-           border: 10px solid;
+           width: 150px;
+           height: 150px;
       }
 
       .time {
