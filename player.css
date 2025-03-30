@@ -503,6 +503,11 @@
         width: 180px;
       }
 
+      .loading-spinner {
+           width: 76px;
+           height: 76px;
+      }
+
       .time {
         font-size: 50px;
       }
