@@ -506,6 +506,7 @@
       .loading-spinner {
            width: 76px;
            height: 76px;
+           border: 10px solid;
       }
 
       .time {
