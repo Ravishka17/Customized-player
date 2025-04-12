@@ -43,6 +43,6 @@ This project is licensed under the MIT License. See the [LICENSE.txt](https://gi
 
 - [Live Demo 1](https://customized-player.vercel.app)
 
-- [Live Demo 2](https://customized-player.vercel.app/video.html)
+- [Live Demo 2](https://customized-player.vercel.app/video)
 
 ---
