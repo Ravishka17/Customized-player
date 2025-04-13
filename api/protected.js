@@ -1,11 +1,8 @@
-// /api/protected.js
 export default function handler(req, res) {
   const referer = req.headers.referer || '';
-
-  if (!referer.includes('yourdomain.verce.app')) {
-    res.redirect(302, '/404.html');
-    return;
+  const allowedDomain = 'https://yourdomain.vercel.app'; // Replace with your actual domain
+  if (!referer || !referer.includes(allowedDomain)) {
+    return res.status(403).json({ error: 'Unauthorized' });
   }
-
   res.status(200).json({ allowed: true });
 }
