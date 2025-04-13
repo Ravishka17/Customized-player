@@ -1437,6 +1437,12 @@
       }
     });
 
+  //block direct access
+  fetch('/api/check-access')
+    .then(res => {
+      if (!res.ok) window.location.href = '/403.html';
+    });
+
   </script>
 </body>
 </html>
