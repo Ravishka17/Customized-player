@@ -1438,7 +1438,7 @@
     });
 
   //block direct access
-  fetch('/api/check-access')
+  fetch('/api/protected')
     .then(res => {
       if (!res.ok) window.location.href = '/403.html';
     });
