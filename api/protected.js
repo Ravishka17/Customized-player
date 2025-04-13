@@ -2,7 +2,7 @@
 export default function handler(req, res) {
   const referer = req.headers.referer || '';
 
-  if (!referer.includes('yourdomain.vercel.app')) {
+  if (!referer.includes('yourdomain.verce.app')) {
     res.redirect(302, '/404.html');
     return;
   }
