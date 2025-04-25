@@ -24,7 +24,7 @@ module.exports = async (req, res) => {
             throw new Error(`Failed to fetch video: ${response.status} ${response.statusText}`);
         }
 
-        res.setHeader('Access-Control-Allow-Origin', 'https://customized-player.vercel.app/player.html'); // Fix CORS
+        res.setHeader('Access-Control-Allow-Origin', 'https://customized-player.vercel.app/api-player.html'); // Fix CORS
         res.setHeader('Access-Control-Allow-Headers', 'Range');
 
         res.setHeader('Content-Type', 'video/mp4');
