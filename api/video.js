@@ -1,10 +1,12 @@
 const fetch = require('node-fetch');
 
 module.exports = async (req, res) => {
-    // Simple token-based authentication
-    const authToken = req.headers['authorization'];
-    if (!authToken || authToken !== 'Bearer YOUR_SECRET_TOKEN') {
-        return res.status(401).send('Unauthorized');
+    const token = req.query.token;
+    const expectedToken = process.env.AUTH_TOKEN;
+
+    if (!token || token !== expectedToken) {
+        res.status(401).json({ error: 'Unauthorized' });
+        return;
     }
 
     const videoUrl = 'https://ia804603.us.archive.org/12/items/please-stand-by-video-effect_202409/SpongeBob%20SquarePants%20Season%201%20Episode%201%20Help%20Wanted%20%E2%80%93%20Reef%20Blower%20%E2%80%93%20Tea%20at%20the%20Treedome%20-%20SpongeBob%20SquarePants.mp4';
@@ -19,6 +21,9 @@ module.exports = async (req, res) => {
         if (!response.ok) {
             throw new Error('Failed to fetch video');
         }
+
+        res.setHeader('Access-Control-Allow-Origin', 'https://customized-player.vercel.app');
+        res.setHeader('Access-Control-Allow-Headers', 'Range');
 
         res.setHeader('Content-Type', 'video/mp4');
         res.setHeader('Accept-Ranges', 'bytes');
@@ -40,6 +45,6 @@ module.exports = async (req, res) => {
         response.body.pipe(res);
     } catch (error) {
         console.error('Error streaming video:', error);
-        res.status(500).send('Error streaming video');
+        res.status(500).json({ error: 'Error streaming video' });
     }
 };
