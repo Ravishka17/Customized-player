@@ -1,0 +1,27 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Custom Video Player</title>
+    <style>
+        #error-message {
+            display: none;
+            color: red;
+            text-align: center;
+        }
+        video {
+            width: 100%;
+            max-width: 800px;
+            margin: 0 auto;
+            display: block;
+        }
+    </style>
+</head>
+<body>
+    <h1>Custom Video Player</h1>
+    <video id="video-player" controls></video>
+    <div id="error-message">This video cannot be played.</div>
+    <script src="/api-player.js"></script>
+</body>
+</html>
