@@ -1,15 +1,85 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Custom Video Player</title>
-    <link rel="stylesheet" href="/player.css">
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Custom Video Player</title>
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/bootstrap-icons/font/bootstrap-icons.css">
+  <link rel="stylesheet" href="/player.css">
 </head>
 <body>
-    <h1>Custom Video Player</h1>
-    <video id="video-player" controls></video>
-    <div id="error-message">This video cannot be played.</div>
-    <script src="/api-player.js"></script>
+  <div class="video-container" id="video-container">
+    <video id="video" type="video/mp4" data-poster="https://res.cloudinary.com/diuuelnkm/image/upload/v1737892949/Help_Wanted_title_card_ulypj1.jpg"></video>
+    <div class="overlay"></div>
+    <div id="subtitles-container"></div>
+    <div id="preview" class="preview"></div>
+    <div id="preview-time" class="preview-time"></div>
+    <div id="error-message" class="error-message hidden">
+      <svg class="icon"><use xlink:href="/icons-sprite.svg#playback-error"></use></svg>
+      <p>This video cannot be played because of a problem with your internet connection.<br>(Error Code: 230002)</p>
+    </div>
+    <div class="center-controls" id="center-controls">
+      <button id="rewind"><svg class="icon"><use xlink:href="/icons-sprite.svg#rewind-10"></use></svg></button>
+      <div class="loading-spinner" id="loading-spinner"></div>
+      <button id="play-pause"><svg class="icon"><use xlink:href="/icons-sprite.svg#play"></use></svg></button>
+      <button id="forward"><svg class="icon"><use xlink:href="/icons-sprite.svg#skip-10"></use></svg></button>
+    </div>
+    <div class="progress-bar" id="progress-bar">
+      <div id="progress"></div>
+    </div>
+    <div class="controls normal-controls">
+      <button id="volume-toggle"><svg class="icon"><use xlink:href="/icons-sprite.svg#volume-on"></use></svg></button>
+      <div class="time" id="time">00:00 / 00:00</div>
+      <a id="download" download="video.mp4"><svg class="icon"><use xlink:href="/icons-sprite.svg#download"></use></svg></a>
+      <button id="subtitles"><svg class="icon"><use xlink:href="/icons-sprite.svg#captions-off"></use></svg></button>
+      <button id="settings"><svg class="icon"><use xlink:href="/icons-sprite.svg#settings"></use></svg></button>
+      <button id="pip-toggle"><svg class="icon"><use xlink:href="/icons-sprite.svg#pip"></use></svg></button>
+      <button id="fullscreen"><svg class="icon"><use xlink:href="/icons-sprite.svg#fullscreen"></use></svg></button>
+    </div>
+    <div class="fullscreen-left-controls controls">
+      <button id="volume-toggle-fullscreen"><svg class="icon"><use xlink:href="/icons-sprite.svg#volume-on"></use></svg></button>
+      <div class="time" id="time-fullscreen">00:00 / 00:00</div>
+    </div>
+    <div class="fullscreen-right-controls controls">
+      <a id="download-fullscreen" download="video.mp4"><svg class="icon"><use xlink:href="/icons-sprite.svg#download"></use></svg></a>
+      <button id="subtitles-fullscreen"><svg class="icon"><use xlink:href="/icons-sprite.svg#captions-off"></use></svg></button>
+      <button id="settings-fullscreen"><svg class="icon"><use xlink:href="/icons-sprite.svg#settings"></use></svg></button>
+      <button id="pip-toggle-fullscreen"><svg class="icon"><use xlink:href="/icons-sprite.svg#pip"></use></svg></button>
+      <button id="fullscreen-exit"><svg class="icon"><use xlink:href="/icons-sprite.svg#fullscreen-exit"></use></svg></button>
+    </div>
+    <div class="settings-menu" id="settings-menu">
+      <div class="settings-header">
+        <div style="text-align: center;"></div>
+        <button class="active" data-tab="quality-tab"><svg class="icon"><use xlink:href="/icons-sprite.svg#quality"></use></svg></button>
+        <button data-tab="captions-tab"><svg class="icon"><use xlink:href="/icons-sprite.svg#captions-off"></use></svg></button>
+        <button data-tab="speed-tab"><svg class="icon"><use xlink:href="/icons-sprite.svg#playback"></use></svg></button>
+        <span class="close-settings" id="close-settings"><svg class="icon"><use xlink:href="/icons-sprite.svg#close"></use></svg></span>
+      </div>
+      <div class="settings-body">
+        <ul id="quality-tab" class="settings-tab active-tab">
+          <li data-quality="auto" class="selected">Auto</li>
+          <li data-quality="1080p">1080p</li>
+          <li data-quality="720p">720p</li>
+          <li data-quality="480p">480p</li>
+          <li data-quality="360p">360p</li>
+          <li data-quality="240p">240p</li>
+        </ul>
+        <ul id="captions-tab" class="settings-tab">
+          <li data-caption="off" class="selected">Off</li>
+          <li data-caption="english">English</li>
+          <li data-caption="spanish">Spanish</li>
+          <li data-caption="french">French</li>
+        </ul>
+        <ul id="speed-tab" class="settings-tab">
+          <li data-speed="0.5">0.5x</li>
+          <li data-speed="1" class="selected">1x</li>
+          <li data-speed="1.5">1.5x</li>
+          <li data-speed="2">2x</li>
+          <li data-speed="2.5">2.5x</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+  <script src="/player.js"></script>
 </body>
 </html>
