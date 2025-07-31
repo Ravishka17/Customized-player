@@ -1,561 +1,566 @@
-     body {
-       margin: 0;
-       padding: 0;
-       height: 91vh;
-       display: flex;
-       align-items: center;
-       justify-content: center;
-       background-color: #000;
-    }
-
-    .video-container {
-      position: relative;
-      width: 382px; /* Mobile view width */
-      height: 100%; /* Mobile view height */
-      background-color: #000;
-    }
-
-    .preview {
-      position: absolute;
-      bottom: 100px; /* Position it above the progress bar */
-      left: 0;
-      width: 150px; /* Set the width of the preview thumbnail */
-      height: 90px; /* Set the height of the preview thumbnail */
-      background: rgba(0, 0, 0, 0.5);
-      background-size: cover;
-      display: none; /* Hide it by default */
-      z-index: 3;
-    }
-
-    .preview-time {
-      position: absolute;
-      bottom: 75px; /* Position it under the preview thumbnail */
-      left: 0;
-      width: 50px;
-      text-align: center;
-      background: rgba(0, 0, 0, 0.7);
-      color: #fff;
-      font-size: 12px;
-      display: none;
-      z-index: 4;
-    }
-
-    video {
-      width: 100%;
-      height: 100%; /* Cover the entire container */
-      display: block;
-    }
-
-    /* Custom Subtitle Styling */
-    #subtitles-container {
-      position: absolute;
-      bottom: 20px;
-      left: 0;
-      width: 100%;
-      text-align: center;
-      font-size: 20px;
-      color: white;
-      text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
-      background: none;
-      backdrop-filter: none !important;
-      z-index: 1000;
-      transition: bottom 0.3s ease; /* smooth transition for position change */
-    }
-
-    /* position above the progress bar when controls are visible */
-    .video-container.show-controls #subtitles-container {
-       bottom: 60px;
-    }
-
-    /* Adjust for fullscreen mode */
-    .video-container:fullscreen #subtitles-container {
-       bottom: 20px; /* Default position in      fullscreen when controls are hidden */
-    }
-
-    .video-container:fullscreen.show-controls  #subtitles-container {
-       bottom: 65px; /* Adjust this value to position above the progress bar in fullscreen */
-    }
-
-    /* Hide the default HTML5 subtitles */
-    video::cue {
-      display: none;
-    }
-
-    #subtitles(.italic) {
-      font-style: italic;
-    }
-
-    /* Progress Bar */
-    .progress-bar {
-      position: absolute;
-      bottom: 50px;
-      width: calc(100% - 30px);
-      left: 15px;
-      height: 5px;
-      background: rgba(85, 85, 85, 0.5);
-      cursor: pointer;
-      backdrop-filter: blur(5px); /* semi-transparent background */
-    }
-
-    .progress-bar div {
-      height: 100%;
-      width: 0;
-      background: #f39c12;
-    }
-
-    /* Bottom Controls */
-    .controls {
-      position: absolute;
-      bottom: 0;
-      left: 15px;
-      right: 15px;
-      width: calc(100% - 30px);
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      background: transparent;
-      color: #f39c12;
-      z-index: 2;
-      padding-right: 10px;
-    }
-
-    /* Fullscreen Left and Right Controls */
-    .fullscreen-left-controls,
-    .fullscreen-right-controls {
-      display: none;
-      align-items: center;
-      background: transparent;
-      color: #f39c12;
-      z-index: 2;
-      padding-right: 10px;
-    }
-
-    /* Hide controls initially */
-    .controls,
-    .fullscreen-left-controls,
-    .fullscreen-right-controls,
-    .progress-bar,
-    .center-controls {
-      opacity: 0;
-      transition: opacity 0.3s ease;
-    }
-
-    .video-container.show-controls .controls,
-    .video-container.show-controls .fullscreen-left-controls,
-    .video-container.show-controls .fullscreen-right-controls,
-    .video-container.show-controls .progress-bar,
-    .video-container.show-controls .center-controls {
-      opacity: 1;
-    }
-
-    .controls button,
-    .controls a {
-      background: none;
-      border: none;
-      color: #f39c12;
-      font-size: 25px;
-      cursor: none;
-      text-decoration: none;
-    }
-
-    .controls button svg,
-    .controls a svg {
-      width: 30px; /* Set the desired width */
-      height: 30px; /* Set the desired height */
-      fill: #f39c12;
-    }
-
-    .time {
-      min-width: 100px;
-    }
-    
-    .center-controls {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      display: flex;
-      align-items: center;
-      gap: 40px;
-      z-index: 2;
-      opacity: 1;
-    }
-
-    .loading-spinner {
-      display: none;
-      width: 48px;
-      height: 48px;
-      border: 5px solid #f39c12; /* Loader color */
-      border-bottom-color: transparent; /* Transparent section */
-      border-radius: 50%;
-      box-sizing: border-box;
-      animation: rotation 1s linear infinite; /* Smooth spin */
-    }
-
-   .center-controls button {
-     background: transparent;
-     border: none;
-     fill: #f39c12;
-     font-size: 38px;
-     cursor: none;
-     transition: background 0.3s ease;
-   }
-
-    .center-controls button svg {
-      height: 50px;
-      width: 50px;
-    }
-
-    /* Rotation animation */
-    @keyframes rotation {
-      0% {
-        transform: rotate(0deg);
-      }
-
-      100% {
-        transform: rotate(360deg);
-      }
-    }
-
-    /* Only show the play button initially */
-    #rewind,
-    #forward {
-      display: none;
-    }
-
-    /* Fullscreen mode fixes */
-    .video-container:fullscreen .controls {
-      display: none;
-    }
-
-    .video-container:fullscreen .fullscreen-left-controls,
-    .video-container:fullscreen .fullscreen-right-controls {
-      display: flex;
-    }
-
-    .video-container:fullscreen .fullscreen-left-controls {
-      position: absolute;
-      bottom: 5px;
-      left: 15px;
-      right: auto;
-      width: auto;
-      justify-content: flex-start;
-    }
-
-    .video-container:fullscreen .fullscreen-right-controls {
-      position: absolute;
-      bottom: 5px;
-      right: 15px;
-      left: auto;
-      width: auto;
-      justify-content: flex-end;
-    }
-
-    .video-container:fullscreen .fullscreen-left-controls button svg,
-    .video-container:fullscreen .fullscreen-right-controls button svg {
-      margin: 0 5px;
-      width: 40px;
-      height: 40px;
-      color: #f39c12;
-    }
-
-    /* Increase size of center control buttons in fullscreen mode */
-    .video-container:fullscreen .center-controls button {
-      font-size: 100px; /* Increase icon size */
-    }
-
-    .video-container:fullscreen .center-controls {
-      gap: 100px;
-    }
-
-    .video-container:fullscreen .center-controls button svg {
-      width: 80px; /* Increase icon size */
-      height: 80px;
-    }
-
-    /* Adjust progress bar size in fullscreen mode */
-    .video-container:fullscreen .progress-bar {
-      bottom: 55px; /* Adjust position */
-      height: 6px; /* Adjust height */
-      width: calc(100% - 30px);
-      left: 15px;
-    }
-
-    /* Adjust time display size in fullscreen mode */
-    .video-container:fullscreen .time {
-      font-size: 20px; /* Adjust font size */
-    }
-
-    /* Adjust download button size in fullscreen mode */
-    .video-container:fullscreen .controls a {
-      font-size: 30px; /* Adjust font size */
-    }
-
-    .video-container:fullscreen .fullscreen-right-controls a svg {
-       width: 40px;
-       height: 40px;
-    }
-
-    /* Ensure the settings menu has proper overflow handling */
-    .settings-menu {
-      position: absolute;
-      top: 30%;
-      right: 5%;
-      background-color: #333;
-      color: white;
-      width: 250px;
-      height: 190px;
-      display: none;
-      flex-direction: column;
-      z-index: 1000;
-      box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
-      overflow-y: auto; /* Changed from scroll to auto for better behavior */
-      -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
-       scrollbar-width: none; /* Hide scrollbar in Firefox */
-      }
-
-      /* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */
-      .settings-menu::-webkit-scrollbar {
-        display: none;
-        width: 0 !important; /* Forcefully hide the scrollbar */
-        background: transparent; /* Ensure no background shows */
-      }
-
-      /* Ensure the settings-body handles the scrolling content */
-      .settings-body {
-        flex: 1;
-        background-color: #333;
-        padding: 10px 5px;
-        overflow-y: auto; /* Ensure scrolling works within the body */
-        -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-     }
-
-     /* Toolbar Header */
-     .settings-header {
-       display: flex;
-       justify-content: space-between;
-       align-items: center;
-       background: #222;
-       padding: 10px; /* Adjusted padding for consistency */
-       border-bottom: 1px solid #555;
-       position: sticky;
-       top: 0;
-       z-index: 10;
-     }
-
-     .settings-header button {
-       background: none;
-       border: none;
-       user-select: none;
-     }
-
-     .settings-header button svg,
-     .settings-header button span {
-       fill: white;    
-       width: 25px;
-       height: 25px;
-     }
-
-     .settings-header button.active {
-       border-bottom: 2px solid #f39c12;
-       font-weight: bold;
-     }
-
-     .close-settings svg {
-       fill: white;
-       width: 25px;
-       height: 25px;
-       margin-right: 10px;
-       user-select: none;
-     }
-
-     /* Tabs */
-     .settings-tab {
-       display: none;
-       list-style: none;
-       margin: 0;
-       padding: 0;
-     }
-
-     .settings-tab li {
-       margin-left: 25px;
-       padding: 8px;
-       position: relative;
-    }
-
-    .settings-tab li.selected::before {
-      content: '\F309'; /* This is just a placeholder. Use the correct unicode for your Bootstrap icon */
-      font-family: 'bootstrap-icons';
-      color: #f39c12;
-      position: absolute;
-      font-size: 30px;
-      margin-left: -30px;
-      top: 2px;
-    }
-
-    .settings-tab.active-tab {
-      display: block;
-    }
-
-    .settings-body {
-      -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
-    }
-
-    /* Error message */
-    .error-message {
-      position: absolute;
-      top: 50%;
-      left: 50%;
-      transform: translate(-50%, -50%);
-      background: rgba(255, 0, 0, 0.8);
-      fill: white;
-      padding: 10px;
-      border-radius: 10px;
-      text-align: center;
-      z-index: 10;
-      display: none;
-    }
-
-    .error-message svg {
-      width: 40px;
-      heigth: 40px;
-      margin-bottom: 5px;
-    }
-
-    /* Fullscreen mode specific styles */
-    .video-container:fullscreen .settings-menu {
-      top: 7%;
-      width: 400px;
-      height: 300px;
-      display: none;
-    }
-
-    .video-container:fullscreen .settings-header {
-      padding: 15px;
-    }
-
-    .video-container:fullscreen .settings-header button svg,
-    .videvideo-container:fullscreen .settings-header button span {
-      width: 30px;
-      height: 30px;
-    }
-
-    .video-container:fullscreen .close-settings svg {
-      width: 30px;
-      height: 30px;
-    }      
-
-    .video-container:fullscreen .settings-tab li {
-      font-size: 18px;
-      padding: 8px;
-    }
-
-    .video-container:fullscreen .settings-tab li.selected::before {
-      font-size: 24px;
-      margin-left: -30px;
-    }
-
-     /* Increase size of fullscreen controls */
-     .fullscreen-left-controls button svg,
-     .fullscreen-right-controls button svg {
-       width: 40px; /* Increase font size for icons */
-       height: 40px;
-     }
-
-    /* Media query for larger screens (desktop) */
-    @media (min-width: 768px) {
-      .video-container {
-        width: 1200px; /* Desktop view width */
-        height: 100%; /* Desktop view height */
-      }
-
-      /* Increase size of progress bar */
-      .progress-bar {
-        bottom: 110px; /* Move it up a bit */
-        height: 15px; /* Increase height */
-      }
-
-      .progress-bar div {
-        height: 100%;
-      }
-
-      /* Increase size of bottom controls */
-      .controls {
-        bottom: 0px;
-        font-size: 30px; /* Increase font size for icons */
-      }
-      
-      .controls button svg,
-      .controls a svg {
-        width: 90px; /* Set the desired width */
-        height: 90px; /* Set the desired height */
-      }
-
-      /* Increase size of center controls */
-      .center-controls {
-        gap: 50px; /* Increase gap between buttons */
-        top: 50%;
-        bottom: 50%;
-      }
-
-      .center-controls button svg {
-        height: 180px; /* Increase icon size */
-        width: 180px;
-      }
-
-      .loading-spinner {
-           width: 150px;
-           height: 150px;
-      }
-
-      .time {
-        font-size: 50px;
-      }
-      
-      #fullscreen {
-        font-size: 70px;
-      }
-
-      #subtitles-container {
-        font-size: 36px; /* Larger font size for desktop */
-      }
-
-      .video-container.show-controls #subtitles-container {
-        bottom: 130px; /* Position above the progress bar (which is at 110px) */
-      }
-
-      .video-container:fullscreen.show-controls #subtitles-container {
-        bottom: 130px; /* Ensure it stays above the progress bar in fullscreen desktop */
-      }
-
-      .settings-menu {
-        top: 30%;
-        width: 500px;
-        height: 380px;
-      }
-
-      .settings-tab li {
-        font-size: 45px;
-        padding: 16px;
-      }
-
-      .settings-tab li.selected::before {
-        font-size: 70px;
-        margin-left: -60px;
-      }
-
-      .settings-header {
-        padding: 20px;
-      }
-      
-      .settings-header button svg,
-      .settings-header button span {
-        width: 50px;
-        height: 50px;
-      }
-
-      .close-settings svg {
-        width: 50px;
-        height: 50px;
-      }
-        }
+body {
+  margin: 0;
+  padding: 0;
+  height: 91vh;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background-color: #000;
+}
+
+.video-container {
+  position: relative;
+  width: 382px; /* Mobile view width */
+  height: 100%; /* Mobile view height */
+  background-color: #000;
+}
+
+.preview {
+  position: absolute;
+  bottom: 100px; /* Position it above the progress bar */
+  left: 0;
+  width: 150px; /* Set the width of the preview thumbnail */
+  height: 90px; /* Set the height of the preview thumbnail */
+  background: rgba(0, 0, 0, 0.5);
+  background-size: cover;
+  display: none; /* Hide it by default */
+  z-index: 3;
+}
+
+.preview-time {
+  position: absolute;
+  bottom: 75px; /* Position it under the preview thumbnail */
+  left: 0;
+  width: 50px;
+  text-align: center;
+  background: rgba(0, 0, 0, 0.7);
+  color: #fff;
+  font-size: 12px;
+  display: none;
+  z-index: 4;
+}
+
+video {
+  width: 100%;
+  height: 100%; /* Cover the entire container */
+  display: block;
+}
+
+/* Custom Subtitle Styling */
+#subtitles-container {
+  position: absolute;
+  bottom: 20px;
+  left: 0;
+  width: 100%;
+  text-align: center;
+  font-size: 20px;
+  color: white;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.5);
+  background: none;
+  backdrop-filter: none !important;
+  z-index: 1000;
+  transition: bottom 0.3s ease; /* smooth transition for position change */
+}
+
+/* position above the progress bar when controls are visible */
+.video-container.show-controls #subtitles-container {
+  bottom: 60px;
+}
+
+/* Adjust for fullscreen mode */
+.video-container:fullscreen #subtitles-container {
+  bottom: 20px; /* Default position in fullscreen when controls are hidden */
+}
+
+.video-container:fullscreen.show-controls #subtitles-container {
+  bottom: 65px; /* Adjust this value to position above the progress bar in fullscreen */
+}
+
+/* Hide the default HTML5 subtitles */
+video::cue {
+  display: none;
+}
+
+#subtitles(.italic) {
+  font-style: italic;
+}
+
+/* Progress Bar */
+.progress-bar {
+  position: absolute;
+  bottom: 50px;
+  width: calc(100% - 30px);
+  left: 15px;
+  height: 5px;
+  background: rgba(85, 85, 85, 0.5);
+  cursor: pointer;
+  backdrop-filter: blur(5px); /* semi-transparent background */
+}
+
+.progress-bar div {
+  height: 100%;
+  width: 0;
+  background: #f39c12;
+}
+
+/* Bottom Controls */
+.controls {
+  position: absolute;
+  bottom: 0;
+  left: 15px;
+  right: 15px;
+  width: calc(100% - 30px);
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: transparent;
+  color: #f39c12;
+  z-index: 2;
+  padding-right: 10px;
+}
+
+/* Fullscreen Left and Right Controls */
+.fullscreen-left-controls,
+.fullscreen-right-controls {
+  display: none;
+  align-items: center;
+  background: transparent;
+  color: #f39c12;
+  z-index: 2;
+  padding-right: 10px;
+}
+
+/* Hide controls initially */
+.controls,
+.fullscreen-left-controls,
+.fullscreen-right-controls,
+.progress-bar,
+.center-controls {
+  opacity: 0;
+  transition: opacity 0.3s ease;
+}
+
+.video-container.show-controls .controls,
+.video-container.show-controls .fullscreen-left-controls,
+.video-container.show-controls .fullscreen-right-controls,
+.video-container.show-controls .progress-bar,
+.video-container.show-controls .center-controls {
+  opacity: 1;
+}
+
+.controls button,
+.controls a {
+  background: none;
+  border: none;
+  color: #f39c12;
+  font-size: 25px;
+  cursor: none;
+  text-decoration: none;
+}
+
+.controls button svg,
+.controls a svg {
+  width: 30px; /* Set the desired width */
+  height: 30px; /* Set the desired height */
+  fill: #f39c12;
+}
+
+.time {
+  min-width: 100px;
+}
+
+.center-controls {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  display: flex;
+  align-items: center;
+  gap: 40px;
+  z-index: 2;
+  opacity: 1;
+}
+
+.loading-spinner {
+  display: none;
+  width: 48px;
+  height: 48px;
+  border: 5px solid #f39c12; /* Loader color */
+  border-bottom-color: transparent; /* Transparent section */
+  border-radius: 50%;
+  box-sizing: border-box;
+  animation: rotation 1s linear infinite; /* Smooth spin */
+}
+
+.center-controls button {
+  background: transparent;
+  border: none;
+  fill: #f39c12;
+  font-size: 38px;
+  cursor: none;
+  transition: background 0.3s ease;
+}
+
+.center-controls button svg {
+  height: 50px;
+  width: 50px;
+}
+
+/* Rotation animation */
+@keyframes rotation {
+  0% {
+    transform: rotate(0deg);
+  }
+
+  100% {
+    transform: rotate(360deg);
+  }
+}
+
+/* Only show the play button initially */
+#rewind,
+#forward {
+  display: none;
+}
+
+/* Fullscreen mode fixes */
+.video-container:fullscreen .controls {
+  display: none;
+}
+
+.video-container:fullscreen .fullscreen-left-controls,
+.video-container:fullscreen .fullscreen-right-controls {
+  display: flex;
+}
+
+.video-container:fullscreen .fullscreen-left-controls {
+  position: absolute;
+  bottom: 5px;
+  left: 15px;
+  right: auto;
+  width: auto;
+  justify-content: flex-start;
+}
+
+.video-container:fullscreen .fullscreen-right-controls {
+  position: absolute;
+  bottom: 5px;
+  right: 15px;
+  left: auto;
+  width: auto;
+  justify-content: flex-end;
+}
+
+.video-container:fullscreen .fullscreen-left-controls button svg,
+.video-container:fullscreen .fullscreen-right-controls button svg {
+  margin: 0 5px;
+  width: 40px;
+  height: 40px;
+  color: #f39c12;
+}
+
+/* Increase size of center control buttons in fullscreen mode */
+.video-container:fullscreen .center-controls button {
+  font-size: 100px; /* Increase icon size */
+}
+
+.video-container:fullscreen .center-controls {
+  gap: 100px;
+}
+
+.video-container:fullscreen .center-controls button svg {
+  width: 80px; /* Increase icon size */
+  height: 80px;
+}
+
+/* Adjust progress bar size in fullscreen mode */
+.video-container:fullscreen .progress-bar {
+  bottom: 55px; /* Adjust position */
+  height: 6px; /* Adjust height */
+  width: calc(100% - 30px);
+  left: 15px;
+}
+
+/* Adjust time display size in fullscreen mode */
+.video-container:fullscreen .time {
+  font-size: 20px; /* Adjust font size */
+}
+
+/* Adjust download button size in fullscreen mode */
+.video-container:fullscreen .controls a {
+  font-size: 30px; /* Adjust font size */
+}
+
+.video-container:fullscreen .fullscreen-right-controls a svg {
+  width: 40px;
+  height: 40px;
+}
+
+/* Settings menu */
+.settings-menu {
+  position: absolute;
+  top: 0;
+  left: 0;
+  right: 0;
+  width: 100%;
+  height: 100%;
+  background-color: #333;
+  color: white;
+  display: none;
+  flex-direction: column;
+  z-index: 1000;
+  box-shadow: 0 4px 10px rgba(0, 0, 0, 0.3);
+  overflow-y: auto; /* Changed from scroll to auto for better behavior */
+  -ms-overflow-style: none; /* Hide scrollbar in IE and Edge */
+  scrollbar-width: none; /* Hide scrollbar in Firefox */
+}
+
+/* Hide scrollbar for WebKit browsers (Chrome, Safari, etc.) */
+.settings-menu::-webkit-scrollbar {
+  display: none;
+  width: 0 !important; /* Forcefully hide the scrollbar */
+  background: transparent; /* Ensure no background shows */
+}
+
+/* Ensure the settings-body handles the scrolling content */
+.settings-body {
+  flex: 1;
+  background-color: #333;
+  padding: 10px 5px;
+  overflow-y: auto; /* Ensure scrolling works within the body */
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
+
+/* Toolbar Header */
+.settings-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  background: #222;
+  padding: 10px; /* Adjusted padding for consistency */
+  border-bottom: 1px solid #555;
+  position: sticky;
+  top: 0;
+  z-index: 10;
+}
+
+.settings-header button {
+  background: none;
+  border: none;
+  user-select: none;
+}
+
+.settings-header button svg,
+.settings-header button span {
+  fill: white;
+  width: 25px;
+  height: 25px;
+}
+
+.settings-header button.active {
+  border-bottom: 2px solid #f39c12;
+  font-weight: bold;
+}
+
+.close-settings svg {
+  fill: white;
+  width: 25px;
+  height: 25px;
+  margin-right: 10px;
+  user-select: none;
+}
+
+/* Tabs */
+.settings-tab {
+  display: none;
+  list-style: none;
+  margin: 0;
+  padding: 0;
+}
+
+.settings-tab li {
+  margin-left: 25px;
+  padding: 8px;
+  position: relative;
+}
+
+.settings-tab li.selected::before {
+  content: '\F309'; /* This is just a placeholder. Use the correct unicode for your Bootstrap icon */
+  font-family: 'bootstrap-icons';
+  color: #f39c12;
+  position: absolute;
+  font-size: 30px;
+  margin-left: -30px;
+  top: 2px;
+}
+
+.settings-tab.active-tab {
+  display: block;
+}
+
+.settings-body {
+  -webkit-overflow-scrolling: touch; /* Smooth scrolling for iOS */
+}
+
+/* Error message */
+.error-message {
+  position: absolute;
+  top: 50%;
+  left: 50%;
+  transform: translate(-50%, -50%);
+  background: rgba(255, 0, 0, 0.8);
+  fill: white;
+  padding: 10px;
+  border-radius: 10px;
+  text-align: center;
+  z-index: 10;
+  display: none;
+}
+
+.error-message svg {
+  width: 40px;
+  height: 40px;
+  margin-bottom: 5px;
+}
+
+/* Fullscreen mode specific styles */
+.video-container:fullscreen .settings-menu {
+  top: 7%;
+  left: auto;
+  right: 5%;
+  width: 400px;
+  height: 300px;
+  display: none;
+}
+
+.video-container:fullscreen .settings-header {
+  padding: 15px;
+}
+
+.video-container:fullscreen .settings-header button svg,
+.video-container:fullscreen .settings-header button span {
+  width: 30px;
+  height: 30px;
+}
+
+.video-container:fullscreen .close-settings svg {
+  width: 30px;
+  height: 30px;
+}
+
+.video-container:fullscreen .settings-tab li {
+  font-size: 18px;
+  padding: 8px;
+}
+
+.video-container:fullscreen .settings-tab li.selected::before {
+  font-size: 24px;
+  margin-left: -30px;
+}
+
+/* Increase size of fullscreen controls */
+.fullscreen-left-controls button svg,
+.fullscreen-right-controls button svg {
+  width: 40px; /* Increase font size for icons */
+  height: 40px;
+}
+
+/* Media query for larger screens (desktop) */
+@media (min-width: 768px) {
+  .video-container {
+    width: 1200px; /* Desktop view width */
+    height: 100%; /* Desktop view height */
+  }
+
+  /* Increase size of progress bar */
+  .progress-bar {
+    bottom: 110px; /* Move it up a bit */
+    height: 15px; /* Increase height */
+  }
+
+  .progress-bar div {
+    height: 100%;
+  }
+
+  /* Increase size of bottom controls */
+  .controls {
+    bottom: 0px;
+    font-size: 30px; /* Increase font size for icons */
+  }
+
+  .controls button svg,
+  .controls a svg {
+    width: 90px; /* Set the desired width */
+    height: 90px; /* Set the desired height */
+  }
+
+  /* Increase size of center controls */
+  .center-controls {
+    gap: 50px; /* Increase gap between buttons */
+    top: 50%;
+    bottom: 50%;
+  }
+
+  .center-controls button svg {
+    height: 180px; /* Increase icon size */
+    width: 180px;
+  }
+
+  .loading-spinner {
+    width: 150px;
+    height: 150px;
+  }
+
+  .time {
+    font-size: 50px;
+  }
+
+  #fullscreen {
+    font-size: 70px;
+  }
+
+  #subtitles-container {
+    font-size: 36px; /* Larger font size for desktop */
+  }
+
+  .video-container.show-controls #subtitles-container {
+    bottom: 130px; /* Position above the progress bar (which is at 110px) */
+  }
+
+  .video-container:fullscreen.show-controls #subtitles-container {
+    bottom: 130px; /* Ensure it stays above the progress bar in fullscreen desktop */
+  }
+
+  .settings-menu {
+    top: 0;
+    left: 0;
+    right: 0;
+    width: 100%;
+    height: 100%;
+  }
+
+  .settings-tab li {
+    font-size: 45px;
+    padding: 16px;
+  }
+
+  .settings-tab li.selected::before {
+    font-size: 70px;
+    margin-left: -60px;
+  }
+
+  .settings-header {
+    padding: 20px;
+  }
+
+  .settings-header button svg,
+  .settings-header button span {
+    width: 50px;
+    height: 50px;
+  }
+
+  .close-settings svg {
+    width: 50px;
+    height: 50px;
+  }
+}
