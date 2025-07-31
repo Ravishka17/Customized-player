@@ -32,6 +32,13 @@ document.addEventListener('DOMContentLoaded', function() {
   const previewTime = document.getElementById('preview-time');
 
   let subtitles = []; // Subtitles are OFF by default
+  let controlsVisible = false;
+  let controlsTimeout;
+  let firstPlay = true;
+  let isTouching = false;
+  let initialTouchX = 0;
+  let initialTime = 0;
+  let wasPlaying = false;
 
   // Function to load subtitles
   function loadSubtitles(lang) {
@@ -91,36 +98,145 @@ document.addEventListener('DOMContentLoaded', function() {
       }
     }
 
-    // Use innerHTML instead of textContent to render HTML tags
     subtitlesContainer.innerHTML = currentSubtitleText;
   }
 
-  video.addEventListener('timeupdate', displaySubtitles);
+  // Function to show controls
+  function showControls() {
+    videoContainer.classList.add('show-controls');
+    centerControls.style.opacity = 1;
+    controlsVisible = true;
+    updateDownloadLink();
+    clearTimeout(controlsTimeout);
+    if (!video.paused && !isTouching && !video.waiting) {
+      controlsTimeout = setTimeout(hideControls, 3000);
+    }
+  }
+
+  // Function to hide controls
+  function hideControls() {
+    if (video.paused || isTouching || video.seeking || video.waiting) return;
+    videoContainer.classList.remove('show-controls');
+    centerControls.style.opacity = 0;
+    controlsVisible = false;
+    updateDownloadLink();
+  }
+
+  // Function to update download link
+  function updateDownloadLink() {
+    const downloadUrl = "https://streamtape.com/get_video?id=1O6YJGyDYwIeO2q&expires=1738379488&ip=GxAsDRMTKxSHDN&token=NAfysj8kfDL2&dl=1";
+    if (controlsVisible) {
+      downloadButton.href = downloadUrl;
+      downloadFullscreenButton.href = downloadUrl;
+    } else {
+      downloadButton.removeAttribute('href');
+      downloadFullscreenButton.removeAttribute('href');
+    }
+  }
+
+  // Function to update PiP button icons
+  function updatePiPIcon(isInPiP) {
+    const pipIcon = isInPiP
+      ? '<svg class="icon"><use xlink:href="icons-sprite.svg#pip-exit"></use></svg>'
+      : '<svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg>';
+    pipToggleButton.innerHTML = pipIcon;
+    pipToggleFullscreenButton.innerHTML = pipIcon;
+  }
+
+  // Check if PiP is supported
+  const isPiPSupported = 'pictureInPictureEnabled' in document && typeof video.requestPictureInPicture === 'function';
+
+  // Disable PiP buttons if not supported
+  if (!isPiPSupported) {
+    pipToggleButton.disabled = true;
+    pipToggleFullscreenButton.disabled = true;
+    pipToggleButton.style.opacity = '0.5';
+    pipToggleFullscreenButton.style.opacity = '0.5';
+  }
+
+  // Video event listeners
+  if (video) {
+    video.addEventListener('timeupdate', () => {
+      displaySubtitles();
+      const currentTime = Math.floor(video.currentTime);
+      const duration = Math.floor(video.duration);
+      progress.style.width = `${(currentTime / duration) * 100}%`;
+
+      const formatTime = (time) => {
+        const minutes = Math.floor(time / 60).toString().padStart(2, '0');
+        const seconds = (time % 60).toString().padStart(2, '0');
+        return `${minutes}:${seconds}`;
+      };
+      timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+      timeDisplayFullscreen.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+    });
+
+    video.addEventListener('pause', () => {
+      showControls();
+      centerControls.style.opacity = 1;
+      rewindButton.style.display = 'block';
+      forwardButton.style.display = 'block';
+    });
+
+    video.addEventListener('play', () => {
+      hideControls();
+      rewindButton.style.display = 'block';
+      forwardButton.style.display = 'block';
+    });
+
+    video.addEventListener('waiting', () => {
+      loadingSpinner.style.display = 'block';
+      playPauseButton.style.display = 'none';
+      centerControls.style.display = 'flex';
+      hideControls();
+    });
+
+    video.addEventListener('playing', () => {
+      loadingSpinner.style.display = 'none';
+      playPauseButton.style.display = 'block';
+      centerControls.style.display = 'flex';
+      showControls();
+    });
+
+    video.addEventListener('error', () => {
+      errorMessage.style.display = 'block';
+    });
+
+    video.addEventListener('play', () => {
+      errorMessage.style.display = 'none';
+    });
+
+    video.addEventListener('enterpictureinpicture', () => {
+      updatePiPIcon(true);
+    });
+
+    video.addEventListener('leavepictureinpicture', () => {
+      updatePiPIcon(false);
+    });
+  }
 
   // Prevent settings menu interactions from affecting the video
   if (settingsMenu) {
     settingsMenu.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent clicks from bubbling to video container
+      event.stopPropagation();
     });
     settingsMenu.addEventListener('touchstart', (event) => {
-      event.stopPropagation(); // Prevent touchstart from bubbling
+      event.stopPropagation();
     });
     settingsMenu.addEventListener('touchend', (event) => {
-      event.stopPropagation(); // Prevent touchend from bubbling
+      event.stopPropagation();
     });
     settingsMenu.addEventListener('dblclick', (event) => {
-      event.stopPropagation(); // Prevent double-click from bubbling
+      event.stopPropagation();
     });
   }
 
   // Toggle settings menu
   if (settingsButton) {
     settingsButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling to video container
+      event.stopPropagation();
+      settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
       if (settingsMenu.style.display === 'flex') {
-        settingsMenu.style.display = 'none';
-      } else {
-        settingsMenu.style.display = 'flex';
         const activeTab = document.querySelector('.settings-header button.active');
         if (!activeTab) {
           document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
@@ -131,11 +247,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (settingsFullscreenButton) {
     settingsFullscreenButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling to video container
+      event.stopPropagation();
+      settingsMenu.style.display = settingsMenu.style.display === 'flex' ? 'none' : 'flex';
       if (settingsMenu.style.display === 'flex') {
-        settingsMenu.style.display = 'none';
-      } else {
-        settingsMenu.style.display = 'flex';
         const activeTab = document.querySelector('.settings-header button.active');
         if (!activeTab) {
           document.querySelector('.settings-header button[data-tab="quality-tab"]').click();
@@ -146,7 +260,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (subtitlesButton) {
     subtitlesButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling
+      event.stopPropagation();
       settingsMenu.style.display = 'flex';
       document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
     });
@@ -154,7 +268,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (subtitlesFullscreenButton) {
     subtitlesFullscreenButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling
+      event.stopPropagation();
       settingsMenu.style.display = 'flex';
       document.querySelector('.settings-header button[data-tab="captions-tab"]').click();
     });
@@ -162,14 +276,14 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (closeSettingsButton) {
     closeSettingsButton.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling
+      event.stopPropagation();
       settingsMenu.style.display = 'none';
     });
   }
 
   tabButtons.forEach(button => {
     button.addEventListener('click', (event) => {
-      event.stopPropagation(); // Prevent click from bubbling
+      event.stopPropagation();
       tabButtons.forEach(btn => btn.classList.remove('active'));
       tabs.forEach(tab => tab.classList.remove('active-tab'));
       button.classList.add('active');
@@ -181,7 +295,7 @@ document.addEventListener('DOMContentLoaded', function() {
     const options = document.querySelectorAll(selector);
     options.forEach(option => {
       option.addEventListener('click', (event) => {
-        event.stopPropagation(); // Prevent click from bubbling
+        event.stopPropagation();
         options.forEach(opt => opt.classList.remove('selected'));
         option.classList.add('selected');
         console.log(`Selected ${type}:`, option.dataset[type]);
@@ -220,14 +334,13 @@ document.addEventListener('DOMContentLoaded', function() {
     'https://s37o60krxrtmmx77.public.blob.vercel-storage.com/spongebob/thumb_008-n2INvZKGJjlKU5T8ARwVSO5ovnrwTU.png'
   ];
 
-  // Show preview on progress bar hover/move
+  // Progress bar event listeners
   progressBar.addEventListener('mousemove', (event) => {
     updatePreview(event.clientX);
     showControls();
     hideCenterControls();
   });
 
-  // Hide preview when not hovering over the progress bar
   progressBar.addEventListener('mouseleave', () => {
     preview.style.display = 'none';
     previewTime.style.display = 'none';
@@ -235,9 +348,8 @@ document.addEventListener('DOMContentLoaded', function() {
     showCenterControls();
   });
 
-  // Seek video when clicking on progress bar
   progressBar.addEventListener('click', (event) => {
-    event.stopPropagation(); // Prevent click from bubbling
+    event.stopPropagation();
     const rect = progressBar.getBoundingClientRect();
     const pos = (event.clientX - rect.left) / rect.width;
     video.currentTime = pos * video.duration;
@@ -246,15 +358,8 @@ document.addEventListener('DOMContentLoaded', function() {
     showControls();
   });
 
-  // Variables to track touch interaction
-  let isTouching = false;
-  let initialTouchX = 0;
-  let initialTime = 0;
-  let wasPlaying = false;
-
-  // Handle touch start on progress bar
   progressBar.addEventListener('touchstart', (event) => {
-    event.stopPropagation(); // Prevent touchstart from bubbling
+    event.stopPropagation();
     isTouching = true;
     initialTouchX = event.touches[0].clientX;
     initialTime = video.currentTime;
@@ -263,12 +368,11 @@ document.addEventListener('DOMContentLoaded', function() {
     updateVideoTime(event.touches[0].clientX);
     showControls();
     hideCenterControls();
-    clearTimeout(controlsTimeout); // Prevent hiding controls
+    clearTimeout(controlsTimeout);
   });
 
-  // Handle touch move on progress bar
   progressBar.addEventListener('touchmove', (event) => {
-    event.stopPropagation(); // Prevent touchmove from bubbling
+    event.stopPropagation();
     if (isTouching) {
       updateVideoTime(event.touches[0].clientX);
       showControls();
@@ -276,9 +380,8 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Handle touch end on progress bar
   progressBar.addEventListener('touchend', (event) => {
-    event.stopPropagation(); // Prevent touchend from bubbling
+    event.stopPropagation();
     isTouching = false;
     const rect = progressBar.getBoundingClientRect();
     const pos = (event.changedTouches[0].clientX - rect.left) / rect.width;
@@ -288,31 +391,23 @@ document.addEventListener('DOMContentLoaded', function() {
     if (wasPlaying) {
       video.play();
     }
-    controlsTimeout = setTimeout(hideControls, 3000); // Hide controls after timeout
+    controlsTimeout = setTimeout(hideControls, 3000);
     showCenterControls();
   });
 
-  // Function to update the video time based on touch/mouse position
+  // Function to update video time for progress bar
   function updateVideoTime(clientX) {
     const rect = progressBar.getBoundingClientRect();
     const pos = (clientX - rect.left) / rect.width;
     const newTime = pos * video.duration;
-
-    // Update the progress bar width
     progress.style.width = `${pos * 100}%`;
-
-    // Display and update the preview thumbnail
     updatePreviewThumbnail(newTime, clientX - rect.left);
-
-    // Display and update the preview time
     updatePreviewTime(newTime, clientX - rect.left);
   }
 
   function updatePreviewThumbnail(time, clientX) {
     const previewIndex = Math.floor((time / video.duration) * previewImages.length);
     const previewImage = previewImages[previewIndex];
-
-    // Display the preview thumbnail
     preview.style.backgroundImage = `url(${previewImage})`;
     preview.style.display = 'block';
     preview.style.left = `${clientX - preview.offsetWidth / 2}px`;
@@ -322,29 +417,24 @@ document.addEventListener('DOMContentLoaded', function() {
     const minutes = Math.floor(time / 60).toString().padStart(2, '0');
     const seconds = Math.floor(time % 60).toString().padStart(2, '0');
     const formattedTime = `${minutes}:${seconds}`;
-
-    // Display the preview time
     previewTime.textContent = formattedTime;
     previewTime.style.display = 'block';
     previewTime.style.left = `${clientX - previewTime.offsetWidth / 2}px`;
   }
 
-  // Function to hide the center controls
+  // Function to hide center controls
   function hideCenterControls() {
     centerControls.style.display = 'none';
   }
 
-  // Function to show the center controls
+  // Function to show center controls
   function showCenterControls() {
     if (!video.seeking && !video.waiting) {
       centerControls.style.display = 'flex';
     }
   }
 
-  let controlsVisible = false;
-  let controlsTimeout;
-  let firstPlay = true;
-
+  // Lazy load poster
   const lazyLoadPoster = (entries, observer) => {
     entries.forEach(entry => {
       if (entry.isIntersecting) {
@@ -364,25 +454,6 @@ document.addEventListener('DOMContentLoaded', function() {
 
   observer.observe(video);
 
-  const showControls = () => {
-    videoContainer.classList.add('show-controls');
-    centerControls.style.opacity = 1;
-    controlsVisible = true;
-    updateDownloadLink();
-    clearTimeout(controlsTimeout);
-    if (!video.paused && !isTouching && !video.waiting) {
-      controlsTimeout = setTimeout(hideControls, 3000);
-    }
-  };
-
-  const hideControls = () => {
-    if (video.paused || isTouching || video.seeking || video.waiting) return;
-    videoContainer.classList.remove('show-controls');
-    centerControls.style.opacity = 0;
-    controlsVisible = false;
-    updateDownloadLink();
-  };
-
   // Prevent right-click context menu
   document.addEventListener('contextmenu', function(event) {
     event.preventDefault();
@@ -390,23 +461,12 @@ document.addEventListener('DOMContentLoaded', function() {
 
   // Prevent long-press context menu on touch devices
   document.addEventListener('touchstart', function(event) {
-    if (!event.target.closest('.settings-menu')) { // Allow touchstart in settings menu
+    if (!event.target.closest('.settings-menu')) {
       event.preventDefault();
     }
   });
 
-  // Function to update the download link based on controls visibility
-  const updateDownloadLink = () => {
-    const downloadUrl = "https://streamtape.com/get_video?id=1O6YJGyDYwIeO2q&expires=1738379488&ip=GxAsDRMTKxSHDN&token=NAfysj8kfDL2&dl=1";
-    if (controlsVisible) {
-      downloadButton.href = downloadUrl;
-      downloadFullscreenButton.href = downloadUrl;
-    } else {
-      downloadButton.removeAttribute('href');
-      downloadFullscreenButton.removeAttribute('href');
-    }
-  };
-
+  // Detect dev tools
   const detectDevTools = () => {
     const devtools = /./;
     devtools.toString = function () {
@@ -418,6 +478,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   setInterval(detectDevTools, 1000);
 
+  // Video container click handler
   videoContainer.addEventListener('click', (event) => {
     if (event.target.closest('.controls') || event.target.closest('.center-controls') || event.target.closest('.settings-menu')) {
       return;
@@ -429,86 +490,7 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  // Update PiP button icons based on state
-  function updatePiPIcon(isInPiP) {
-    const pipIcon = isInPiP
-      ? '<svg class="icon"><use xlink:href="icons-sprite.svg#pip-exit"></use></svg>'
-      : '<svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg>';
-    pipToggleButton.innerHTML = pipIcon;
-    pipToggleFullscreenButton.innerHTML = pipIcon;
-  }
-
-  // Check if PiP is supported
-  const isPiPSupported = 'pictureInPictureEnabled' in document && typeof video.requestPictureInPicture === 'function';
-
-  // Disable PiP buttons if not supported
-  if (!isPiPSupported) {
-    pipToggleButton.disabled = true;
-    pipToggleFullscreenButton.disabled = true;
-    pipToggleButton.style.opacity = '0.5';
-    pipToggleFullscreenButton.style.opacity = '0.5';
-  }
-
-  if (video) {
-    video.addEventListener('pause', () => {
-      showControls();
-      centerControls.style.opacity = 1;
-      rewindButton.style.display = 'block';
-      forwardButton.style.display = 'block';
-    });
-
-    video.addEventListener('play', () => {
-      hideControls();
-      rewindButton.style.display = 'block';
-      forwardButton.style.display = 'block';
-    });
-
-    video.addEventListener('waiting', () => {
-      loadingSpinner.style.display = 'block';
-      playPauseButton.style.display = 'none';
-      centerControls.style.display = 'flex'; // Ensure center controls are visible
-      hideControls(); // Hide bottom controls
-    });
-
-    video.addEventListener('playing', () => {
-      loadingSpinner.style.display = 'none';
-      playPauseButton.style.display = 'block';
-      centerControls.style.display = 'flex'; // Ensure center controls are visible
-      showControls(); // Show bottom controls
-    });
-
-    video.addEventListener('timeupdate', () => {
-      const currentTime = Math.floor(video.currentTime);
-      const duration = Math.floor(video.duration);
-      progress.style.width = `${(currentTime / duration) * 100}%`;
-
-      const formatTime = (time) => {
-        const minutes = Math.floor(time / 60).toString().padStart(2, '0');
-        const seconds = (time % 60).toString().padStart(2, '0');
-        return `${minutes}:${seconds}`;
-      };
-      timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-      timeDisplayFullscreen.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-    });
-
-    video.addEventListener('error', () => {
-      errorMessage.style.display = 'block';
-    });
-
-    video.addEventListener('play', () => {
-      errorMessage.style.display = 'none';
-    });
-
-    // Update PiP button state when entering/exiting PiP
-    video.addEventListener('enterpictureinpicture', () => {
-      updatePiPIcon(true);
-    });
-
-    video.addEventListener('leavepictureinpicture', () => {
-      updatePiPIcon(false);
-    });
-  }
-
+  // Play/pause button
   if (playPauseButton) {
     playPauseButton.addEventListener('click', (event) => {
       event.stopPropagation();
@@ -517,72 +499,75 @@ document.addEventListener('DOMContentLoaded', function() {
         playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
         firstPlay = false;
       } else {
-        if (!controlsVisible) {
-          showControls();
+        if (video.paused) {
+          video.play();
+          playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
         } else {
-          if (video.paused) {
-            video.play();
-            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
-          } else {
-            video.pause();
-            playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
-          }
+          video.pause();
+          playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#play"></use></svg>';
         }
+        showControls();
       }
     });
   }
 
+  // Rewind button
   if (rewindButton) {
-    if (!controlsVisible) {
-      showControls();
-      return;
-    }
     rewindButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      video.currentTime -= 10;
-    });
-  }
-
-  if (forwardButton) {
-    forwardButton.addEventListener('click', (event) => {
       if (!controlsVisible) {
         showControls();
-        return;
+      } else {
+        video.currentTime -= 10;
       }
-      event.stopPropagation();
-      video.currentTime += 10;
     });
   }
 
-  const toggleMute = () => {
+  // Forward button
+  if (forwardButton) {
+    forwardButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!controlsVisible) {
+        showControls();
+      } else {
+        video.currentTime += 10;
+      }
+    });
+  }
+
+  // Mute toggle
+  function toggleMute() {
     video.muted = !video.muted;
-    const volumeIcon = video.muted ? '<svg class="icon"><use xlink:href="icons-sprite.svg#mute"></use></svg>' : '<svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>';
+    const volumeIcon = video.muted
+      ? '<svg class="icon"><use xlink:href="icons-sprite.svg#mute"></use></svg>'
+      : '<svg class="icon"><use xlink:href="icons-sprite.svg#volume-on"></use></svg>';
     volumeToggleButton.innerHTML = volumeIcon;
     volumeToggleFullscreenButton.innerHTML = volumeIcon;
-  };
+  }
 
   if (volumeToggleButton) {
     volumeToggleButton.addEventListener('click', (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
-        return;
+      } else {
+        toggleMute();
       }
-      event.stopPropagation();
-      toggleMute();
     });
   }
 
   if (volumeToggleFullscreenButton) {
     volumeToggleFullscreenButton.addEventListener('click', (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
-        return;
+      } else {
+        toggleMute();
       }
-      event.stopPropagation();
-      toggleMute();
     });
   }
 
+  // PiP toggle
   if (pipToggleButton && isPiPSupported) {
     pipToggleButton.addEventListener('click', async (event) => {
       event.stopPropagation();
@@ -595,7 +580,6 @@ document.addEventListener('DOMContentLoaded', function() {
           await document.exitPictureInPicture();
           updatePiPIcon(false);
         } else {
-          // Ensure video is playing before entering PiP
           if (video.paused) {
             await video.play();
           }
@@ -625,7 +609,6 @@ document.addEventListener('DOMContentLoaded', function() {
           await document.exitPictureInPicture();
           updatePiPIcon(false);
         } else {
-          // Ensure video is playing before entering PiP
           if (video.paused) {
             await video.play();
           }
@@ -643,33 +626,8 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (fullscreenButton) {
-    fullscreenButton.addEventListener('click', (event) => {
-      if (!controlsVisible) {
-        showControls();
-        return;
-      }
-      event.stopPropagation();
-      if (!document.fullscreenElement) {
-        enterFullscreen();
-      } else {
-        exitFullscreen();
-      }
-    });
-  }
-
-  if (fullscreenExitButton) {
-    fullscreenExitButton.addEventListener('click', (event) => {
-      if (!controlsVisible) {
-        showControls();
-        return;
-      }
-      event.stopPropagation();
-      exitFullscreen();
-    });
-  }
-
-  const enterFullscreen = () => {
+  // Fullscreen toggle
+  function enterFullscreen() {
     if (videoContainer.requestFullscreen) {
       videoContainer.requestFullscreen();
     } else if (videoContainer.mozRequestFullScreen) {
@@ -681,16 +639,16 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     if (screen.orientation && screen.orientation.lock) {
-      screen.orientation.lock('landscape').catch(function (error) {
+      screen.orientation.lock('landscape').catch(error => {
         console.log('Orientation lock failed: ', error);
       });
     }
 
     fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
     fullscreenExitButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
-  };
+  }
 
-  const exitFullscreen = () => {
+  function exitFullscreen() {
     if (document.exitFullscreen) {
       document.exitFullscreen();
     } else if (document.mozCancelFullScreen) {
@@ -702,9 +660,35 @@ document.addEventListener('DOMContentLoaded', function() {
     }
 
     fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
-  };
+  }
 
-  document.addEventListener('fullscreenchange', function () {
+  if (fullscreenButton) {
+    fullscreenButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!controlsVisible) {
+        showControls();
+      } else {
+        if (!document.fullscreenElement) {
+          enterFullscreen();
+        } else {
+          exitFullscreen();
+        }
+      }
+    });
+  }
+
+  if (fullscreenExitButton) {
+    fullscreenExitButton.addEventListener('click', (event) => {
+      event.stopPropagation();
+      if (!controlsVisible) {
+        showControls();
+      } else {
+        exitFullscreen();
+      }
+    });
+  }
+
+  document.addEventListener('fullscreenchange', () => {
     if (!document.fullscreenElement) {
       fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
     } else {
@@ -712,28 +696,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
-  if (centerControls) {
-    centerControls.addEventListener('click', showControls);
-  }
-
-  if (progressBar) {
-    progressBar.addEventListener('click', showControls);
-  }
-
-  document.querySelectorAll('.controls button').forEach(button => {
-    button.addEventListener('click', showControls);
-  });
-
-  videoContainer.addEventListener('contextmenu', (e) => {
-    e.preventDefault();
-  });
-
+  // Double-tap handling
   let lastTapTime = 0;
   const DOUBLE_TAP_THRESHOLD = 300;
 
   if (videoContainer) {
     videoContainer.addEventListener('touchend', (e) => {
-      // Skip double-tap handling if the settings menu is open or the touch is within it
       if (settingsMenu.style.display === 'flex' || e.target.closest('.settings-menu')) {
         return;
       }
@@ -754,8 +722,10 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Download buttons
   if (downloadButton) {
     downloadButton.addEventListener('click', (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
         event.preventDefault();
@@ -765,6 +735,7 @@ document.addEventListener('DOMContentLoaded', function() {
 
   if (downloadFullscreenButton) {
     downloadFullscreenButton.addEventListener('click', (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
         event.preventDefault();
@@ -772,6 +743,7 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
+  // Prevent dev tools
   window.addEventListener('keydown', (event) => {
     if ((event.ctrlKey && event.shiftKey && event.key === 'I') ||
         (event.ctrlKey && event.shiftKey && event.key === 'J') ||
@@ -781,12 +753,12 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Update preview on progress bar hover
   function updatePreview(clientX) {
     const rect = progressBar.getBoundingClientRect();
     const pos = (clientX - rect.left) / rect.width;
     const previewTimeValue = pos * video.duration;
 
-    // Display the preview thumbnail
     preview.style.display = 'block';
     preview.style.left = `${clientX - rect.left - preview.offsetWidth / 2}px`;
 
@@ -794,7 +766,6 @@ document.addEventListener('DOMContentLoaded', function() {
     const previewImage = previewImages[previewIndex];
     preview.style.backgroundImage = `url(${previewImage})`;
 
-    // Display the preview time
     const minutes = Math.floor(previewTimeValue / 60).toString().padStart(2, '0');
     const seconds = Math.floor(previewTimeValue % 60).toString().padStart(2, '0');
     const formattedTime = `${minutes}:${seconds}`;
@@ -802,4 +773,20 @@ document.addEventListener('DOMContentLoaded', function() {
     previewTime.style.display = 'block';
     previewTime.style.left = `${clientX - previewTime.offsetWidth / 2}px`;
   }
+
+  if (centerControls) {
+    centerControls.addEventListener('click', showControls);
+  }
+
+  if (progressBar) {
+    progressBar.addEventListener('click', showControls);
+  }
+
+  document.querySelectorAll('.controls button').forEach(button => {
+    button.addEventListener('click', showControls);
+  });
+
+  videoContainer.addEventListener('contextmenu', (e) => {
+    e.preventDefault();
+  });
 });
