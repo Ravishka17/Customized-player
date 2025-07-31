@@ -429,6 +429,26 @@ document.addEventListener('DOMContentLoaded', function() {
     }
   });
 
+  // Update PiP button icons based on state
+  function updatePiPIcon(isInPiP) {
+    const pipIcon = isInPiP
+      ? '<svg class="icon"><use xlink:href="icons-sprite.svg#pip-exit"></use></svg>'
+      : '<svg class="icon"><use xlink:href="icons-sprite.svg#pip"></use></svg>';
+    pipToggleButton.innerHTML = pipIcon;
+    pipToggleFullscreenButton.innerHTML = pipIcon;
+  }
+
+  // Check if PiP is supported
+  const isPiPSupported = 'pictureInPictureEnabled' in document && typeof video.requestPictureInPicture === 'function';
+
+  // Disable PiP buttons if not supported
+  if (!isPiPSupported) {
+    pipToggleButton.disabled = true;
+    pipToggleFullscreenButton.disabled = true;
+    pipToggleButton.style.opacity = '0.5';
+    pipToggleFullscreenButton.style.opacity = '0.5';
+  }
+
   if (video) {
     video.addEventListener('pause', () => {
       showControls();
@@ -478,6 +498,15 @@ document.addEventListener('DOMContentLoaded', function() {
     video.addEventListener('play', () => {
       errorMessage.style.display = 'none';
     });
+
+    // Update PiP button state when entering/exiting PiP
+    video.addEventListener('enterpictureinpicture', () => {
+      updatePiPIcon(true);
+    });
+
+    video.addEventListener('leavepictureinpicture', () => {
+      updatePiPIcon(false);
+    });
   }
 
   if (playPauseButton) {
@@ -504,11 +533,11 @@ document.addEventListener('DOMContentLoaded', function() {
   }
 
   if (rewindButton) {
+    if (!controlsVisible) {
+      showControls();
+      return;
+    }
     rewindButton.addEventListener('click', (event) => {
-      if (!controlsVisible) {
-        showControls();
-        return;
-      }
       event.stopPropagation();
       video.currentTime -= 10;
     });
@@ -554,40 +583,62 @@ document.addEventListener('DOMContentLoaded', function() {
     });
   }
 
-  if (pipToggleButton) {
+  if (pipToggleButton && isPiPSupported) {
     pipToggleButton.addEventListener('click', async (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
         return;
       }
-      event.stopPropagation();
       try {
         if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
+          updatePiPIcon(false);
         } else {
+          // Ensure video is playing before entering PiP
+          if (video.paused) {
+            await video.play();
+          }
           await video.requestPictureInPicture();
+          updatePiPIcon(true);
         }
       } catch (error) {
-        console.log('Error with Picture-in-Picture:', error);
+        console.error('Picture-in-Picture error:', error.message);
+        errorMessage.style.display = 'block';
+        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture mode: ${error.message}</p>`;
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 3000);
       }
     });
   }
 
-  if (pipToggleFullscreenButton) {
+  if (pipToggleFullscreenButton && isPiPSupported) {
     pipToggleFullscreenButton.addEventListener('click', async (event) => {
+      event.stopPropagation();
       if (!controlsVisible) {
         showControls();
         return;
       }
-      event.stopPropagation();
       try {
         if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
+          updatePiPIcon(false);
         } else {
+          // Ensure video is playing before entering PiP
+          if (video.paused) {
+            await video.play();
+          }
           await video.requestPictureInPicture();
+          updatePiPIcon(true);
         }
       } catch (error) {
-        console.log('Error with Picture-in-Picture:', error);
+        console.error('Picture-in-Picture error:', error.message);
+        errorMessage.style.display = 'block';
+        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture mode: ${error.message}</p>`;
+        setTimeout(() => {
+          errorMessage.style.display = 'none';
+        }, 3000);
       }
     });
   }
@@ -657,7 +708,7 @@ document.addEventListener('DOMContentLoaded', function() {
     if (!document.fullscreenElement) {
       fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
     } else {
-      fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen"></use></svg>';
+      fullscreenButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#fullscreen-exit"></use></svg>';
     }
   });
 
