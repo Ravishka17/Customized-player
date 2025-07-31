@@ -40,6 +40,22 @@ document.addEventListener('DOMContentLoaded', function() {
   let initialTime = 0;
   let wasPlaying = false;
 
+  // Ensure video is PiP-enabled
+  if (video) {
+    video.removeAttribute('disablePictureInPicture'); // Ensure PiP is not disabled
+  }
+
+  // Check if PiP is supported
+  const isPiPSupported = 'pictureInPictureEnabled' in document && typeof video.requestPictureInPicture === 'function';
+
+  // Disable PiP buttons if not supported
+  if (!isPiPSupported) {
+    pipToggleButton.disabled = true;
+    pipToggleFullscreenButton.disabled = true;
+    pipToggleButton.style.opacity = '0.5';
+    pipToggleFullscreenButton.style.opacity = '0.5';
+  }
+
   // Function to load subtitles
   function loadSubtitles(lang) {
     let subtitleURL = '';
@@ -75,11 +91,11 @@ document.addEventListener('DOMContentLoaded', function() {
   function changeSubtitles(lang) {
     if (lang === 'off') {
       subtitlesContainer.textContent = '';
-      subtitles = []; // Clear subtitles
+      subtitles = [];
     } else {
       loadSubtitles(lang);
     }
-    settingsMenu.style.display = 'none'; // Close menu after selection
+    settingsMenu.style.display = 'none';
   }
 
   // Function to display subtitles
@@ -143,32 +159,22 @@ document.addEventListener('DOMContentLoaded', function() {
     pipToggleFullscreenButton.innerHTML = pipIcon;
   }
 
-  // Check if PiP is supported
-  const isPiPSupported = 'pictureInPictureEnabled' in document && typeof video.requestPictureInPicture === 'function';
-
-  // Disable PiP buttons if not supported
-  if (!isPiPSupported) {
-    pipToggleButton.disabled = true;
-    pipToggleFullscreenButton.disabled = true;
-    pipToggleButton.style.opacity = '0.5';
-    pipToggleFullscreenButton.style.opacity = '0.5';
-  }
-
   // Video event listeners
   if (video) {
     video.addEventListener('timeupdate', () => {
       displaySubtitles();
       const currentTime = Math.floor(video.currentTime);
       const duration = Math.floor(video.duration);
-      progress.style.width = `${(currentTime / duration) * 100}%`;
-
-      const formatTime = (time) => {
-        const minutes = Math.floor(time / 60).toString().padStart(2, '0');
-        const seconds = (time % 60).toString().padStart(2, '0');
-        return `${minutes}:${seconds}`;
-      };
-      timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
-      timeDisplayFullscreen.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+      if (!isNaN(duration)) {
+        progress.style.width = `${(currentTime / duration) * 100}%`;
+        const formatTime = (time) => {
+          const minutes = Math.floor(time / 60).toString().padStart(2, '0');
+          const seconds = (time % 60).toString().padStart(2, '0');
+          return `${minutes}:${seconds}`;
+        };
+        timeDisplay.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+        timeDisplayFullscreen.textContent = `${formatTime(currentTime)} / ${formatTime(duration)}`;
+      }
     });
 
     video.addEventListener('pause', () => {
@@ -200,10 +206,13 @@ document.addEventListener('DOMContentLoaded', function() {
 
     video.addEventListener('error', () => {
       errorMessage.style.display = 'block';
+      errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Video playback error occurred.</p>`;
     });
 
-    video.addEventListener('play', () => {
+    video.addEventListener('loadedmetadata', () => {
       errorMessage.style.display = 'none';
+      // Ensure video is PiP-enabled after metadata is loaded
+      video.removeAttribute('disablePictureInPicture');
     });
 
     video.addEventListener('enterpictureinpicture', () => {
@@ -455,12 +464,12 @@ document.addEventListener('DOMContentLoaded', function() {
   observer.observe(video);
 
   // Prevent right-click context menu
-  document.addEventListener('contextmenu', function(event) {
+  document.addEventListener('contextmenu', (event) => {
     event.preventDefault();
   });
 
   // Prevent long-press context menu on touch devices
-  document.addEventListener('touchstart', function(event) {
+  document.addEventListener('touchstart', (event) => {
     if (!event.target.closest('.settings-menu')) {
       event.preventDefault();
     }
@@ -495,12 +504,20 @@ document.addEventListener('DOMContentLoaded', function() {
     playPauseButton.addEventListener('click', (event) => {
       event.stopPropagation();
       if (firstPlay) {
-        video.play();
+        video.play().catch(error => {
+          errorMessage.style.display = 'block';
+          errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Playback error: ${error.message}</p>`;
+          setTimeout(() => errorMessage.style.display = 'none', 3000);
+        });
         playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
         firstPlay = false;
       } else {
         if (video.paused) {
-          video.play();
+          video.play().catch(error => {
+            errorMessage.style.display = 'block';
+            errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Playback error: ${error.message}</p>`;
+            setTimeout(() => errorMessage.style.display = 'none', 3000);
+          });
           playPauseButton.innerHTML = '<svg class="icon"><use xlink:href="icons-sprite.svg#pause"></use></svg>';
         } else {
           video.pause();
@@ -515,11 +532,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (rewindButton) {
     rewindButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-      } else {
-        video.currentTime -= 10;
-      }
+      video.currentTime -= 10;
+      showControls();
     });
   }
 
@@ -527,11 +541,8 @@ document.addEventListener('DOMContentLoaded', function() {
   if (forwardButton) {
     forwardButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-      } else {
-        video.currentTime += 10;
-      }
+      video.currentTime += 10;
+      showControls();
     });
   }
 
@@ -548,22 +559,16 @@ document.addEventListener('DOMContentLoaded', function() {
   if (volumeToggleButton) {
     volumeToggleButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-      } else {
-        toggleMute();
-      }
+      toggleMute();
+      showControls();
     });
   }
 
   if (volumeToggleFullscreenButton) {
     volumeToggleFullscreenButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-      } else {
-        toggleMute();
-      }
+      toggleMute();
+      showControls();
     });
   }
 
@@ -571,28 +576,28 @@ document.addEventListener('DOMContentLoaded', function() {
   if (pipToggleButton && isPiPSupported) {
     pipToggleButton.addEventListener('click', async (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-        return;
-      }
       try {
         if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
           updatePiPIcon(false);
         } else {
-          if (video.paused) {
-            await video.play();
+          if (video.paused || video.ended || !video.currentTime) {
+            await video.play().catch(error => {
+              throw new Error(`Cannot play video: ${error.message}`);
+            });
+          }
+          if (video.hasAttribute('disablePictureInPicture')) {
+            throw new Error('Picture-in-Picture is disabled on this video');
           }
           await video.requestPictureInPicture();
           updatePiPIcon(true);
         }
+        showControls();
       } catch (error) {
         console.error('Picture-in-Picture error:', error.message);
         errorMessage.style.display = 'block';
-        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture mode: ${error.message}</p>`;
-        setTimeout(() => {
-          errorMessage.style.display = 'none';
-        }, 3000);
+        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture: ${error.message}</p>`;
+        setTimeout(() => errorMessage.style.display = 'none', 3000);
       }
     });
   }
@@ -600,28 +605,28 @@ document.addEventListener('DOMContentLoaded', function() {
   if (pipToggleFullscreenButton && isPiPSupported) {
     pipToggleFullscreenButton.addEventListener('click', async (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-        return;
-      }
       try {
         if (document.pictureInPictureElement) {
           await document.exitPictureInPicture();
           updatePiPIcon(false);
         } else {
-          if (video.paused) {
-            await video.play();
+          if (video.paused || video.ended || !video.currentTime) {
+            await video.play().catch(error => {
+              throw new Error(`Cannot play video: ${error.message}`);
+            });
+          }
+          if (video.hasAttribute('disablePictureInPicture')) {
+            throw new Error('Picture-in-Picture is disabled on this video');
           }
           await video.requestPictureInPicture();
           updatePiPIcon(true);
         }
+        showControls();
       } catch (error) {
         console.error('Picture-in-Picture error:', error.message);
         errorMessage.style.display = 'block';
-        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture mode: ${error.message}</p>`;
-        setTimeout(() => {
-          errorMessage.style.display = 'none';
-        }, 3000);
+        errorMessage.innerHTML = `<svg class="icon"><use xlink:href="icons-sprite.svg#playback-error"></use></svg><p>Failed to toggle Picture-in-Picture: ${error.message}</p>`;
+        setTimeout(() => errorMessage.style.display = 'none', 3000);
       }
     });
   }
@@ -665,26 +670,20 @@ document.addEventListener('DOMContentLoaded', function() {
   if (fullscreenButton) {
     fullscreenButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
+      if (!document.fullscreenElement) {
+        enterFullscreen();
       } else {
-        if (!document.fullscreenElement) {
-          enterFullscreen();
-        } else {
-          exitFullscreen();
-        }
+        exitFullscreen();
       }
+      showControls();
     });
   }
 
   if (fullscreenExitButton) {
     fullscreenExitButton.addEventListener('click', (event) => {
       event.stopPropagation();
-      if (!controlsVisible) {
-        showControls();
-      } else {
-        exitFullscreen();
-      }
+      exitFullscreen();
+      showControls();
     });
   }
 
