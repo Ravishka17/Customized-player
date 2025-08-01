@@ -1,5 +1,27 @@
 {
-  "rewrites": [
-    { "source": "/video", "destination": "/video.html" }
+  "version": 2,
+  "builds": [
+    {
+      "src": "api/stream.js",
+      "use": "@vercel/node"
+    },
+    {
+      "src": "public/**",
+      "use": "@vercel/static"
+    }
+  ],
+  "routes": [
+    {
+      "source": "/video",
+      "destination": "/video.html"
+    },
+    {
+      "source": "/api/stream",
+      "dest": "/api/stream.js"
+    },
+    {
+      "source": "/(.*)",
+      "dest": "/public/$1"
+    }
   ]
 }
