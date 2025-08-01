@@ -1,4 +1,4 @@
-const http = require('http');
+const https = require('https'); // Changed from 'http' to 'https'
 const fs = require('fs');
 const path = require('path');
 
@@ -7,7 +7,7 @@ const config = JSON.parse(fs.readFileSync(path.join(process.cwd(), 'config/video
 
 module.exports = (req, res) => {
   // Handle the /api/stream endpoint
-  http.get(config.videoUrl, (response) => {
+  https.get(config.videoUrl, (response) => { // Changed from http.get to https.get
     // Forward relevant headers
     res.setHeader('Content-Type', response.headers['content-type']);
     res.setHeader('Accept-Ranges', 'bytes'); // Support range requests for seeking
