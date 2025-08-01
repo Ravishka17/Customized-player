@@ -1,0 +1,15 @@
+{
+  "name": "video-player",
+  "version": "1.0.0",
+  "description": "Custom video player with streaming proxy",
+  "engines": {
+    "node": "18.x"
+  },
+  "dependencies": {},
+  "devDependencies": {
+    "vercel": "^28.0.0"
+  },
+  "scripts": {
+    "deploy": "vercel deploy"
+  }
+}
