@@ -12,15 +12,15 @@
   ],
   "routes": [
     {
-      "source": "/video",
-      "destination": "/video.html"
+      "src": "/video",
+      "dest": "/video.html"
     },
     {
-      "source": "/api/stream",
+      "src": "/api/stream",
       "dest": "/api/stream.js"
     },
     {
-      "source": "/(.*)",
+      "src": "/(.*)",
       "dest": "/public/$1"
     }
   ]
